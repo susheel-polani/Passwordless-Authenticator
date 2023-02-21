@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Passwordless Authenticator (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "Passwordless Authenticator (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
