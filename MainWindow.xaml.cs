@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using Passwordless_Authenticator.Services.HTTPServer;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -29,6 +30,7 @@ namespace Passwordless_Authenticator
         public MainWindow()
         {
             this.InitializeComponent();
+           WebInterfaceServer.startServer();
         }
 
         private void myButton_Click(object sender, RoutedEventArgs e)
