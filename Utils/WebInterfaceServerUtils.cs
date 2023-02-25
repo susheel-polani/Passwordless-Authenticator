@@ -157,6 +157,7 @@ namespace Passwordless_Authenticator.Utils
             string[] segments = uri.Segments;
             NameValueCollection endPointInfo = new NameValueCollection();
 
+            // To handle empty url
             if (segments.Length == 1) {
                 
                 endPointInfo.Add("route","/" );
