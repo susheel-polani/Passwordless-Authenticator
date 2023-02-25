@@ -155,11 +155,22 @@ namespace Passwordless_Authenticator.Utils
         /// <returns>NameValueCollection</returns>
         public static NameValueCollection getEndpointInfo(Uri uri) { 
             string[] segments = uri.Segments;
+            NameValueCollection endPointInfo = new NameValueCollection();
+
+            // To handle empty url
+            if (segments.Length == 1) {
+                
+                endPointInfo.Add("route","/" );
+                endPointInfo.Add("endpoint", "");
+
+                return endPointInfo;
+                
+            }
+
             string endPoint = "/" + segments[segments.Length - 1];
             var routeSegments = segments.SkipLast(1).ToArray();
             string route = String.Join("", routeSegments);
            
-            NameValueCollection endPointInfo = new NameValueCollection();
 
             endPointInfo.Add("route", route.Remove(route.Length - 1, 1));
             endPointInfo.Add("endpoint", endPoint.Remove(endPoint.Length - 1, 1));

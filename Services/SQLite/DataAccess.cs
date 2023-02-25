@@ -19,10 +19,10 @@ namespace Passwordless_Authenticator.Services.SQLite
                new SqliteConnection($"Filename={dbpath}"))
             {
                 db.Open();
-
-                String tableCommand = "CREATE TABLE IF NOT " +
-                    "EXISTS MyTable (Primary_Key INTEGER PRIMARY KEY, " +
-                    "Text_Entry NVARCHAR(2048) NULL)";
+                
+                String tableCommand = @"CREATE TABLE IF NOT 
+                    EXISTS MyTable (Primary_Key INTEGER PRIMARY KEY,
+                    Text_Entry NVARCHAR(2048) NULL)";
 
                 SqliteCommand createTable = new SqliteCommand(tableCommand, db);
 
