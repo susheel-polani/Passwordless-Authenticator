@@ -41,7 +41,7 @@ namespace Passwordless_Authenticator
 
             if (inputPassword == actualPassword)
             {
-                this.Frame.Navigate(typeof(BlankPage1));
+                this.Frame.Navigate(typeof(HomePage));
             }
             else
             {

@@ -35,33 +35,18 @@ namespace Passwordless_Authenticator
         public MainWindow()
         {
            this.InitializeComponent();
-            WebInterfaceServer.startServer();
-
-            authenticateUser();
-        }
-
-        private async void authenticateUser()
-        {
-            var authAvail = AppAuthenticationService.isWindowsAuthAvailable();
-            WindowsAuthData test = authAvail.Result;
-
-            if (test.message == "Windows Hello Authentication is available.")
-            {
-                var data = AppAuthenticationService.authenticate();
-                WindowsAuthData result = data.Result;
-
-                if (result.message == "Logged In Successfully")
-                {
-                    this.Frame
-                }
-
-            }
-
+           WebInterfaceServer.startServer();
         }
 
         private void myButton_Click(object sender, RoutedEventArgs e)
         {
             myButton.Content = "Clicked";
+            Page loginPage = new Login();
+            this.Content = loginPage;
+        }
+
+        private void authenticateUser()
+        {
 
         }
     }
