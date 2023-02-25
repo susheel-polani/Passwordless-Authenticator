@@ -8,7 +8,7 @@ namespace Passwordless_Authenticator.Constants.HTTPServer
 {
     internal class WebInterfaceServerConstants
     {
-        public const string APP_SERVER_URL = "http://localhost:4000/";
+        public const string APP_SERVER_URL = "http://localhost:8759/";
         
         public const string HTTP_METHOD_GET = "GET";
         public const string HTTP_METHOD_POST = "POST";

@@ -8,9 +8,10 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-using Passwordless_Authenticator.Services.HTTPServer;
+using Passwordless_Authenticator.Services.SQLite;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -23,20 +24,18 @@ using Windows.Foundation.Collections;
 namespace Passwordless_Authenticator
 {
     /// <summary>
-    /// An empty window that can be used on its own or navigated to within a Frame.
+    /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MainWindow : Window
+    public sealed partial class BlankPage1 : Page
     {
-        public MainWindow()
+        public BlankPage1()
         {
             this.InitializeComponent();
-           WebInterfaceServer.startServer();
         }
 
-        private void myButton_Click(object sender, RoutedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
-            myButton.Content = "Clicked";
-
+            PasswordDB.AddPassword(passwordBox1.Password);
         }
     }
 }

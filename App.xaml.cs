@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Shapes;
+using Passwordless_Authenticator.Services.SQLite;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,6 +19,7 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Media.MediaProperties;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -36,6 +38,7 @@ namespace Passwordless_Authenticator
         public App()
         {
             this.InitializeComponent();
+            PasswordDB.InitializePwdDatabase();
         }
 
         /// <summary>
@@ -45,6 +48,11 @@ namespace Passwordless_Authenticator
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
             m_window = new MainWindow();
+            Frame rootFrame = new Frame();
+
+            m_window.Content = rootFrame;
+
+            rootFrame.Navigate(typeof(Login));
             m_window.Activate();
         }
 
