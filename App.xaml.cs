@@ -39,6 +39,7 @@ namespace Passwordless_Authenticator
         {
             this.InitializeComponent();
             PasswordDB.InitializePwdDatabase();
+            UserPrefDB.InitializeUsrPrfDatabase();
         }
 
         /// <summary>
@@ -47,8 +48,13 @@ namespace Passwordless_Authenticator
         /// <param name="args">Details about the launch request and process.</param>
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
-            m_window = new MainWindow();
-            m_window.Activate();
+            //m_window = new MainWindow();
+            //m_window.Activate();
+            m_window = new Window();
+            Frame rootFrame = new Frame();
+            this.m_window.Content = rootFrame;
+            this.m_window.Activate();
+            rootFrame.Navigate(typeof(LandingPage));
         }
 
         private Window m_window;
