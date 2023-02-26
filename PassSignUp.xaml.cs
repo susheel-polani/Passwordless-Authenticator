@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using Passwordless_Authenticator.Services.Crypto;
 using Passwordless_Authenticator.Services.SQLite;
 using System;
 using System.Collections.Generic;
@@ -35,7 +36,34 @@ namespace Passwordless_Authenticator
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            PasswordDB.AddPassword(passwordBox1.Password);
+            if (string.IsNullOrEmpty(passwordBox1.Password))
+            {
+                TextB1.Text = "Password cannot be empty";
+                TextB1.Visibility = Visibility.Visible;
+            }
+
+            else
+            {
+                string userPass = passwordBox1.Password;
+                string userPassHash = CryptoUtils.hashData(userPass);
+                string recoveryKey = CryptoUtils.getUniqueKey(30);
+                string recoveryKeyHash = CryptoUtils.hashData(recoveryKey);
+                PasswordDB.AddPassword(userPassHash, recoveryKeyHash);
+                TextB1.Text = "Password set successfully. Your recovery key is:" + recoveryKey;
+
+                passwordBox1.Visibility = Visibility.Collapsed;
+                textBlockPassword.Visibility = Visibility.Collapsed;
+                TextB1.Visibility = Visibility.Visible;
+                Submit.Visibility = Visibility.Collapsed;
+                goToHome.Visibility = Visibility.Visible;
+                UserPrefDB.SetPref("Custom");
+
+            }
+        }
+
+        private void goHome(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(HomePage));
         }
     }
 }

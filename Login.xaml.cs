@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using Passwordless_Authenticator.Services.Crypto;
 using Passwordless_Authenticator.Services.SQLite;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Media;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -37,9 +39,11 @@ namespace Passwordless_Authenticator
         {
             string inputPassword = passwordBox2.Password;
 
-            string actualPassword = PasswordDB.GetPassword();
+            string passHash = PasswordDB.GetPassword();
 
-            if (inputPassword == actualPassword)
+            string inputPassHash = CryptoUtils.hashData(inputPassword);
+
+            if (inputPassHash == passHash)
             {
                 this.Frame.Navigate(typeof(HomePage));
             }

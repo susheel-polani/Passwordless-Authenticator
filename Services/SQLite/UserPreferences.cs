@@ -12,39 +12,84 @@ namespace Passwordless_Authenticator.Services.SQLite
 {
     internal class UserPrefDB
     {
-        public async static void InitializeUsrPrfDatabase()
+        public async static Task<bool> InitializeUsrPrfDatabase()
         {
-            await ApplicationData.Current.LocalFolder.CreateFileAsync("preferences.db", CreationCollisionOption.OpenIfExists);
-            string dbpath = Path.Combine(ApplicationData.Current.LocalFolder.Path, "preferences.db");
-            using (SqliteConnection db =
-               new SqliteConnection($"Filename={dbpath}"))
+            try
             {
-                db.Open();
 
-                String tableCommand = "CREATE TABLE IF NOT " +
-                    "EXISTS UsrPrfTable (Primary_Key INTEGER PRIMARY KEY, " +
-                    "Setting_Entry NVARCHAR(2048) NOT NULL, " + "Value_Entry NVARCHAR(2048) NOT NULL)";
+                await ApplicationData.Current.LocalFolder.CreateFileAsync("preferences.db", CreationCollisionOption.OpenIfExists);
+                string dbpath = Path.Combine(ApplicationData.Current.LocalFolder.Path, "preferences.db");
+                using (SqliteConnection db =
+                   new SqliteConnection($"Filename={dbpath}"))
+                {
+                    db.Open();
 
-                SqliteCommand createTable = new SqliteCommand(tableCommand, db);
+                    String tableCommand = "CREATE TABLE IF NOT " +
+                        "EXISTS UsrPrfTable (Primary_Key INTEGER PRIMARY KEY, " +
+                        "Setting_Entry NVARCHAR(2048) NOT NULL, " + "Value_Entry NVARCHAR(2048) NOT NULL)";
 
-                createTable.ExecuteReader();
+                    SqliteCommand createTable = new SqliteCommand(tableCommand, db);
+
+                    createTable.ExecuteReader();
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
             }
         }
 
-        public static void AddPassword(string inputText)
+        public static string CheckEmpty()
         {
-            string dbpath = Path.Combine(ApplicationData.Current.LocalFolder.Path, "password.db");
+            string dbpath = Path.Combine(ApplicationData.Current.LocalFolder.Path, "preferences.db");
             using (SqliteConnection db =
               new SqliteConnection($"Filename={dbpath}"))
             {
                 db.Open();
 
+                SqliteCommand checkCommand = new SqliteCommand();
+                checkCommand.Connection = db;
+
+                checkCommand.CommandText = "SELECT count(*) FROM UsrPrfTable;";
+                SqliteDataReader query = checkCommand.ExecuteReader();
+
+                string entries = "Value";
+
+                while (query.Read())
+                {
+                    entries = query.GetString(0);
+
+                }
+
+                return entries;
+            }
+        }
+
+        public static void SetPref(string inputText)
+        {
+            string dbpath = Path.Combine(ApplicationData.Current.LocalFolder.Path, "preferences.db");
+            using (SqliteConnection db =
+              new SqliteConnection($"Filename={dbpath}"))
+            {
+                db.Open();
+
+                string entries = CheckEmpty();
+                    
                 SqliteCommand insertCommand = new SqliteCommand();
                 insertCommand.Connection = db;
 
                 // Use parameterized query to prevent SQL injection attacks
-                insertCommand.CommandText = "INSERT INTO PwdTable VALUES (Null, @Entry);";
-                insertCommand.Parameters.AddWithValue("@Entry", inputText);
+                if (entries == "0")
+                {
+                    insertCommand.CommandText = "INSERT INTO UsrPrfTable VALUES (NULL, 'AuthPreference', @Entry);";
+                    insertCommand.Parameters.AddWithValue("@Entry", inputText);
+                }
+                else
+                {
+                    insertCommand.CommandText = "UPDATE UsrPrfTable SET Value_Entry = @Entry where Setting_Entry = 'AuthPreference'";
+                    insertCommand.Parameters.AddWithValue("@Entry", inputText);
+                }
 
                 insertCommand.ExecuteReader();
             }
@@ -71,7 +116,9 @@ namespace Passwordless_Authenticator.Services.SQLite
                 while(query.Read())
                 {
                     entries = query.GetString(0);
+  
                 }
+                Debug.WriteLine(entries);
 
                 return entries;
             }

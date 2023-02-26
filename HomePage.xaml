@@ -13,7 +13,41 @@
 
     <Grid>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-            <Button x:Name="myButton">HOME PAGE</Button>
+            <TextBlock Text="HOME PAGE."
+                   Name="TextB1"
+           IsTextSelectionEnabled="True" 
+           SelectionHighlightColor="Green" 
+           Foreground="Blue" 
+           FontWeight="Light" 
+           FontFamily="Arial" 
+           FontStyle="Italic"/>
+            <TextBlock Text="HOME PAGE."
+                   Name="TextB2"
+           IsTextSelectionEnabled="True" 
+           SelectionHighlightColor="Green" 
+           Foreground="Red" 
+           FontWeight="Light" 
+           FontFamily="Arial" 
+           FontStyle="Italic"/>
+            <Button x:Name="changeAuthentication" Click="changeAuthMethod">Change Authentication</Button>
+            <Button x:Name="changePass" Visibility="Collapsed" Click="changePassword">Change Password</Button>
+            <Button x:Name="useHello" Visibility="Collapsed" Click="useWinHello">Use Windows Hello</Button>
+            
+            <PasswordBox x:Name="enterPass" Visibility="Collapsed"></PasswordBox>
+            <Button x:Name="submitPass" Visibility="Collapsed" Click="checkPassword">Submit</Button>
+
+            <Button x:Name="setPass" Visibility="Collapsed" Click="setPassword">Set Password</Button>
+
+            <Button x:Name="forgotPass" Visibility="Collapsed" Click="forgotPassword">Forgot Password</Button>
+ 
+            <PasswordBox x:Name="enterRecoveryKey" Visibility="Collapsed"></PasswordBox>
+            <Button x:Name="submitKey" Visibility="Collapsed" Click="submitRecoveryKey">Submit Key</Button>
+
+            <PasswordBox x:Name="enterNewPass" Visibility="Collapsed"></PasswordBox>
+            <Button x:Name="submitNewPass" Visibility="Collapsed" Click="setNewPassword">Submit</Button>
+            
+            <Button x:Name="reloadHome" Visibility="Collapsed" Click="reloadHomePage">Go Home</Button>
+
         </StackPanel>
     </Grid>
 </Page>

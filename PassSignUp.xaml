@@ -11,32 +11,21 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid  Height="350" Width="525" Background="White">
-        <TextBlock Height="23" HorizontalAlignment="Left" Margin="10,5,0,0" Name="textBlockHeading" Text="Registration:" VerticalAlignment="Top" Width="110"  FontSize="17" FontStretch="ExtraCondensed"/>
-        <!--Button as a Link button using style-->
-        <Button Margin="451,5,12,288" Content="Login" Click="Button_Click">
-            <Button.Template>
-                <ControlTemplate TargetType="Button">
-                    <TextBlock TextDecorations="Underline">  
-                    </TextBlock>
-                </ControlTemplate>
-            </Button.Template>
-            <Button.Style>
-                <Style TargetType="Button">
-                    <Setter Property="Foreground" Value="Navy" />
-                </Style>
-            </Button.Style>
-        </Button>
-        <!--end Button as a Link button using style-->
-        <Grid Margin="31,0,29,23" Background="White" Height="264" VerticalAlignment="Bottom">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="252*" />
-                <!--   <RowDefinition Height="12*" />-->
-            </Grid.RowDefinitions>
-            <TextBlock Height="23" HorizontalAlignment="Left" Margin="67,107,0,0" Name="textBlockPassword" Text="Password:" VerticalAlignment="Top" Width="110"  />
+    <Grid>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock Text="This text demonstrates some TextBlock properties."
+                   Name="TextB1"
+           IsTextSelectionEnabled="True" 
+           SelectionHighlightColor="Green" 
+           Foreground="Blue" 
+           FontWeight="Light" 
+           FontFamily="Arial" 
+           FontStyle="Italic"
+                   Visibility="Collapsed"/>
+            <TextBlock Name="textBlockPassword" Text="Password:"/>
             <PasswordBox Height="23" HorizontalAlignment="Left" Margin="183,107,0,0" Name="passwordBox1" VerticalAlignment="Top" Width="222" />
-            <!--For password-->
-            <Button Content="Submit" Height="23" HorizontalAlignment="Left" Margin="183,204,0,0" Name="Submit" VerticalAlignment="Top" Width="70" Click="Button_Click" />
-        </Grid>
+            <Button Content="Submit" Name="Submit" Click="Button_Click" />
+            <Button Content="Go Home" Name="goToHome" Click="goHome" Visibility="Collapsed" />
+        </StackPanel>
     </Grid>
 </Page>

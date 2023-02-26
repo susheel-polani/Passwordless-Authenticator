@@ -12,9 +12,12 @@ using Microsoft.UI.Xaml.Shapes;
 using Passwordless_Authenticator.Services.SQLite;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
@@ -35,11 +38,42 @@ namespace Passwordless_Authenticator
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
         /// </summary>
+        /// 
+
+        string setting;
         public App()
         {
             this.InitializeComponent();
-            PasswordDB.InitializePwdDatabase();
-            UserPrefDB.InitializeUsrPrfDatabase();
+        }
+
+        private async void initApp()
+        {
+            try
+            {
+                await PasswordDB.InitializePwdDatabase();
+                await UserPrefDB.InitializeUsrPrfDatabase();
+                setting = UserPrefDB.GetPref();
+                if (setting == "Empty")
+                {
+                    m_window = new Window();
+                    Frame rootFrame = new Frame();
+                    this.m_window.Content = rootFrame;
+                    this.m_window.Activate();
+                    rootFrame.Navigate(typeof(LandingPage));
+                }
+                else
+                {
+                    m_window = new Window();
+                    Frame rootFrame = new Frame();
+                    this.m_window.Content = rootFrame;
+                    this.m_window.Activate();
+                    rootFrame.Navigate(typeof(HomePage));
+                }
+            }
+            catch
+            {
+                Debug.WriteLine("DB init failed");
+            }
         }
 
         /// <summary>
@@ -50,11 +84,7 @@ namespace Passwordless_Authenticator
         {
             //m_window = new MainWindow();
             //m_window.Activate();
-            m_window = new Window();
-            Frame rootFrame = new Frame();
-            this.m_window.Content = rootFrame;
-            this.m_window.Activate();
-            rootFrame.Navigate(typeof(LandingPage));
+            initApp();
         }
 
         private Window m_window;

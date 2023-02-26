@@ -9,15 +9,21 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Passwordless_Authenticator.Models;
+using Passwordless_Authenticator.Services.Auth;
 using Passwordless_Authenticator.Services.SQLite;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Gaming.Input.ForceFeedback;
+using Windows.Security.Credentials;
+using Windows.System.UserProfile;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -35,10 +41,36 @@ namespace Passwordless_Authenticator
             setAuthMethod();
         }
 
-        private void setAuthMethod()
+        private async void setAuthMethod()
         {
-            string setting = UserPrefDB.GetPref();
-            Debug.WriteLine(setting);
+
+            bool authAvail = await AppAuthenticationService.isAuthSetup();
+            if (authAvail == false)
+            {
+                // Key credential is not enabled yet as user 
+                // needs to connect to a Microsoft Account and select a PIN in the connecting flow.
+                TextB1.Text = "Windows Hello is not setup!\nPlease go to Windows Settings and set it up, or use a custom password";
+                useCustom.Visibility = Visibility.Visible;
+            }
+
+            else
+            {
+                TextB1.Text = "Windows Hello available. Do you want to use that for authentication?";
+                usePassport.Visibility = Visibility.Visible;
+                useCustom.Visibility = Visibility.Visible;
+            }
+
+        }
+
+        private void goToSetPass(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(BlankPage1));
+        }
+
+        private void useWindows(object sender, RoutedEventArgs e)
+        {
+            UserPrefDB.SetPref("WindowsHello");
+            this.Frame.Navigate(typeof(HomePage));
         }
     }
 }
