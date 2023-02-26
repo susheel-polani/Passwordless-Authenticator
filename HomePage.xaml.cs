@@ -158,7 +158,7 @@ namespace Passwordless_Authenticator
         private async void useWinHello(object sender, RoutedEventArgs e)
         {
 
-            WindowsAuthData result = await AppAuthenticationService.authenticate();
+            WindowsAuthData result = await AppAuthenticationService.authenticate(null);
             if (result.message == "Logged In Successfully")
             {
                 UserPrefDB.SetPref("WindowsHello");
@@ -167,6 +167,13 @@ namespace Passwordless_Authenticator
 
             }
 
+        }
+
+        private async void genPrompt(object sender, RoutedEventArgs e)
+        {
+            WindowsAuthData result = await AppAuthenticationService.authenticateUser("Enter your credentials to authenticate");
+            TextB1.Text = result.flag.ToString();
+            TextB2.Text = result.message;
         }
     }
 }

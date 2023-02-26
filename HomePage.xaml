@@ -32,7 +32,9 @@
             <Button x:Name="changeAuthentication" Click="changeAuthMethod">Change Authentication</Button>
             <Button x:Name="changePass" Visibility="Collapsed" Click="changePassword">Change Password</Button>
             <Button x:Name="useHello" Visibility="Collapsed" Click="useWinHello">Use Windows Hello</Button>
-            
+
+            <Button x:Name="promptButton" Click="genPrompt">Generate Prompt</Button>
+
             <PasswordBox x:Name="enterPass" Visibility="Collapsed"></PasswordBox>
             <Button x:Name="submitPass" Visibility="Collapsed" Click="checkPassword">Submit</Button>
 

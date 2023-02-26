@@ -10,6 +10,9 @@ using Windows.Security.Credentials.UI;
 using Windows.Security.Credentials;
 using Microsoft.UI.Xaml.Controls;
 using System.Reflection.Emit;
+using System.Runtime.InteropServices;
+using Meziantou.Framework.Win32;
+using Passwordless_Authenticator.Services.SQLite;
 
 namespace Passwordless_Authenticator.Services.Auth
 {
@@ -42,13 +45,21 @@ namespace Passwordless_Authenticator.Services.Auth
         /// <returns>
         /// Class <c>WindowsAuthData</c>
         /// </returns>
-        public static async Task<WindowsAuthData> authenticate()
+        public static async Task<WindowsAuthData> authenticate(string[] args)
         {
+
             try
             {
-                var windowsAuthVerification = await UserConsentVerifier.RequestVerificationAsync(AppAuthConstants.APP_AUTH_PROMPT_MSG);
-
-                return AppAuthConstants.getVerificationData(windowsAuthVerification);
+                if (args is null)
+                {
+                    var windowsAuthVerification = await UserConsentVerifier.RequestVerificationAsync(AppAuthConstants.APP_AUTH_PROMPT_MSG);
+                    return AppAuthConstants.getVerificationData(windowsAuthVerification);
+                }
+                else
+                {
+                    var windowsAuthVerification = await UserConsentVerifier.RequestVerificationAsync(args[0]);
+                    return AppAuthConstants.getVerificationData(windowsAuthVerification);
+                }
             }
             catch
             {
@@ -57,26 +68,47 @@ namespace Passwordless_Authenticator.Services.Auth
 
         }
 
-        public static string ShowDialog(string text, string caption)
+        public static async Task<WindowsAuthData> authenticateUser(string inputText)
         {
-            Form prompt = new Form()
+            WindowsAuthData result = new WindowsAuthData(false, "Unauthenticated");
+            string setting = UserPrefDB.GetPref();
+            if (setting == "Custom")
             {
-                Width = 500,
-                Height = 150,
-                FormBorderStyle = FormBorderStyle.FixedDialog,
-                Text = caption,
-                StartPosition = FormStartPosition.CenterScreen
-            };
-            Label textLabel = new Label() { Left = 50, Top = 20, Text = text };
-            TextBox textBox = new TextBox() { Left = 50, Top = 50, Width = 400 };
-            Button confirmation = new Button() { Text = "Ok", Left = 350, Width = 100, Top = 70, DialogResult = DialogResult.OK };
-            confirmation.Click += (sender, e) => { prompt.Close(); };
-            prompt.Controls.Add(textBox);
-            prompt.Controls.Add(confirmation);
-            prompt.Controls.Add(textLabel);
-            prompt.AcceptButton = confirmation;
+                string pass = PromptAuth(inputText);
+                bool check = PasswordService.checkPassword(pass);
+                if (check)
+                {
+                    result.flag = true;
+                    result.message = "Authenticated via Custom Password";
+                }
+                else
+                {
+                    result.flag = false;
+                    result.message = "Authentication via Custom Password Failed";
+                }
 
-            return prompt.ShowDialog() == DialogResult.OK ? textBox.Text : "";
+            }
+
+            else if (setting == "WindowsHello")
+            {
+                string[] vals = { inputText };
+                result = await AppAuthenticationService.authenticate(vals);
+            }
+
+            return result;
+        }
+
+        public static string PromptAuth(string inputText)
+        {
+            string pass;
+            var creds = CredentialManager.PromptForCredentials(
+                    messageText: inputText,
+                    saveCredential: Meziantou.Framework.Win32.CredentialSaveOption.Selected,
+                    userName: "User");
+
+            pass = creds?.Password;
+
+            return pass;
         }
 
         public static async Task<bool> isAuthSetup()
