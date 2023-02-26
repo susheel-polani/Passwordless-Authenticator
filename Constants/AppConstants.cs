@@ -9,5 +9,10 @@ namespace Passwordless_Authenticator.Constants
     internal class AppConstants
     {
         public const string GENERIC_ERROR = "Something Went Wrong Please try again later !";
+
+        //Database
+        public const string DB_NAME = "asym-auth.db";
+
+
     }
 }

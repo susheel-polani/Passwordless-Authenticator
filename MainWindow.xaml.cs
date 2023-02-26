@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Passwordless_Authenticator.Services.HTTPServer;
+using Passwordless_Authenticator.Services.SQLite;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,6 +17,12 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+
+using Microsoft.Extensions.Configuration;
+using Passwordless_Authenticator.Constants;
+using Microsoft.Data.Sqlite;
+using System.Diagnostics;
+using Passwordless_Authenticator.Dao_controllers;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -30,12 +37,25 @@ namespace Passwordless_Authenticator
         public MainWindow()
         {
             this.InitializeComponent();
-           WebInterfaceServer.startServer();
+            WebInterfaceServer.startServer();
+            DataAccess.setUpDatabase();
+
         }
+
+            
 
         private void myButton_Click(object sender, RoutedEventArgs e)
         {
             myButton.Content = "Clicked";
+
+            try {
+                UserAuthDataController.test();
+            } catch (Exception ex) { 
+            
+                Debug.WriteLine(ex);
+            }
+
+           
         }
     }
 }
