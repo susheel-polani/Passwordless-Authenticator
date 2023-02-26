@@ -173,7 +173,14 @@ namespace Passwordless_Authenticator.Utils
            
 
             endPointInfo.Add("route", route.Remove(route.Length - 1, 1));
-            endPointInfo.Add("endpoint", endPoint.Remove(endPoint.Length - 1, 1));
+
+            if (endPoint[endPoint.Length - 1] == '/')
+            {
+                endPointInfo.Add("endpoint", endPoint.Remove(endPoint.Length - 1, 1));
+            }
+            else {
+                endPointInfo.Add("endpoint", endPoint);
+            }
 
             return endPointInfo;
 
