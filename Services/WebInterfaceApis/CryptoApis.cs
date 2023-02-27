@@ -25,6 +25,8 @@ namespace Passwordless_Authenticator.Services.WebInterfaceApis
 
             Debug.WriteLine(WebInterfaceServerUtils.getPayload(request));
 
+
+
             var response = context.Response;
 
             var responsePayload = new ResponsePayload();

@@ -6,87 +6,101 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Microsoft.Data.Sqlite;
+using Passwordless_Authenticator.Constants;
+using System.Diagnostics;
+using Passwordless_Authenticator.Utils;
+using System.Collections;
+using Newtonsoft.Json.Linq;
+using System.Data;
+using System.Reflection.PortableExecutable;
 
 namespace Passwordless_Authenticator.Services.SQLite
 {
     internal class DataAccess
     {
-        public async static void InitializeDatabase()
-        {
-            await ApplicationData.Current.LocalFolder.CreateFileAsync("passwordless-KeyPairs.db", CreationCollisionOption.OpenIfExists);
-            string dbpath = Path.Combine(ApplicationData.Current.LocalFolder.Path, "passwordless-KeyPairs.db");
-            using (SqliteConnection db =
-               new SqliteConnection($"Filename={dbpath}"))
-            {
-                db.Open();
+        public async static Task<bool> setUpDatabase() {
+            try {
+                await ApplicationData.Current.LocalFolder.CreateFileAsync(AppConstants.DB_NAME, CreationCollisionOption.OpenIfExists);
+                string dbpath = Path.Combine(ApplicationData.Current.LocalFolder.Path, AppConstants.DB_NAME);
 
-                String tableCommand = "CREATE TABLE IF NOT " +
-                    "EXISTS MyTable (Primary_Key INTEGER PRIMARY KEY, " +
-                    "Text_Entry NVARCHAR(2048) NULL)";
+                using (SqliteConnection db = new SqliteConnection($"Filename={dbpath};"))
+                {
+                   
+                    db.Open();
+                    List<string> queries = new List<string>() {
+                        DBQueries.CREATE_DOMAINS_TABLE,
+                        DBQueries.CREATE_USER_AUTH_PREF_TABLE,
+                        DBQueries.CREATE_USER_DATA_TABLE,
+                    };
 
-                SqliteCommand createTable = new SqliteCommand(tableCommand, db);
+                    foreach (string query in queries) {
+                       new SqliteCommand(query, db).ExecuteReader();
+                    }
+                    
+                }
 
-                createTable.ExecuteReader();
+
+                return true;
+            } catch (Exception ex) {
+                Debug.WriteLine(ex.Message);
+                return false;
             }
+           
         }
-
-        public static void AddData(string inputText)
-        {
-            string dbpath = Path.Combine(ApplicationData.Current.LocalFolder.Path, "passwordless-KeyPairs.db");
+        
+        public static List<JObject> executeQuery(string query, List<SqliteParameter> parameters) {
+            
+            List<JObject> result = new List<JObject>();
+            
+            string dbpath = Path.Combine(ApplicationData.Current.LocalFolder.Path, AppConstants.DB_NAME);
+            
             using (SqliteConnection db =
               new SqliteConnection($"Filename={dbpath}"))
             {
                 db.Open();
 
-                SqliteCommand insertCommand = new SqliteCommand();
-                insertCommand.Connection = db;
+                SqliteCommand command = new SqliteCommand();
+                command.Connection = db;
 
-                // Use parameterized query to prevent SQL injection attacks
-                insertCommand.CommandText = "INSERT INTO MyTable VALUES (NULL, @Entry);";
-                insertCommand.Parameters.AddWithValue("@Entry", inputText);
+                command.CommandText = query;
 
-                insertCommand.ExecuteReader();
-            }
-
-        }
-        public static List<String> GetData()
-        {
-            List<String> entries = new List<string>();
-
-            string dbpath = Path.Combine(ApplicationData.Current.LocalFolder.Path, "passwordless-KeyPairs.db");
-            using (SqliteConnection db =
-               new SqliteConnection($"Filename={dbpath}"))
-            {
-                db.Open();
-
-                SqliteCommand selectCommand = new SqliteCommand
-                    ("SELECT Text_Entry from MyTable", db);
-
-                SqliteDataReader query = selectCommand.ExecuteReader();
-
-                while (query.Read())
+                foreach (SqliteParameter parameter in parameters)
                 {
-                    entries.Add(query.GetString(0));
+                    command.Parameters.Add(parameter);
+                }
+                SqliteDataReader dataReader = command.ExecuteReader();
+                
+               
+                if (!dataReader.HasRows) {
+                    return result;
+                }
+
+                var schemaTable = dataReader.GetSchemaTable();
+
+                // Get the column names from the schema table
+                var columns = schemaTable.Rows
+                    .OfType<DataRow>()
+                    .Select(row => row["ColumnName"].ToString())
+                    .ToList();
+
+               
+
+                while (dataReader.Read())
+                {
+                    foreach (var column in columns)
+                    {
+                        var value = dataReader[column];
+                        Debug.WriteLine($">>> DB : column = {column} : value : {value}");
+                        JObject obj = new JObject();
+                        obj.Add(new JProperty(column, value));
+                        result.Add(obj);
+                    }
+                    
                 }
             }
-
-            return entries;
+            Debug.WriteLine(">>>>>> DB : Query executed");
+            return result;
         }
-
-        public static void DropTable()
-        {
-            string dbpath = Path.Combine(ApplicationData.Current.LocalFolder.Path, "passwordless-KeyPairs.db");
-            using (SqliteConnection db =
-              new SqliteConnection($"Filename={dbpath}"))
-            {
-                db.Open();
-
-                String tableCommand = "DROP TABLE IF EXISTS MyTable;";
-
-                SqliteCommand dropTable = new SqliteCommand(tableCommand, db);
-
-                dropTable.ExecuteReader();
-            }
-        }
+        
     }
 }
