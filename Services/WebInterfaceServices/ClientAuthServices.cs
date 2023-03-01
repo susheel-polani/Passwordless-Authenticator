@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Passwordless_Authenticator.Constants.HTTPServer;
 using Passwordless_Authenticator.Dao_controllers;
 using Passwordless_Authenticator.Models;
@@ -31,7 +32,7 @@ namespace Passwordless_Authenticator.Services.SignUp
                     responsePayload.isSuccess = false;
                     responsePayload.message = WebInterfaceServerConstants.USER_ALREADY_EXISTS;
                     responseContext.StatusCode = (int)HttpStatusCode.InternalServerError;
-                    responseContext.StatusDescription = WebInterfaceServerConstants.HTTP_RESP_INTERNAL_ERR;
+                    responseContext.StatusDescription = WebInterfaceServerConstants.ERR_HTTP_INTERNAL_ERROR;
                 }
                 else
                 {
@@ -51,6 +52,28 @@ namespace Passwordless_Authenticator.Services.SignUp
                 responseContext.StatusCode = (int)HttpStatusCode.Forbidden;
                 responseContext.StatusDescription = WebInterfaceServerConstants.HTTP_RESP_UNAUTHORIZED;
             }
+            return responsePayload;
+        }
+
+        public static async Task<ResponsePayload> fetchUsernames(string domainName, HttpListenerContext context)
+        {
+            List<JObject> rows = UserAuthDataController.getUsernames(domainName);
+            JArray usernameList = new JArray();
+            for(int i=0;i < rows.Count;i++)
+            {
+                usernameList.Add(rows[i].GetValue("username").ToString());
+            }
+            JObject result = new JObject(new JProperty("usernames", usernameList));
+            Debug.WriteLine(JsonConvert.SerializeObject(result));
+
+            var responsePayload = new ResponsePayload();
+            var responseContext = context.Response;
+            responsePayload.isSuccess = true;
+            responsePayload.message = WebInterfaceServerConstants.USERNAME_FETCH_SUCCESS;
+            responsePayload.payload = result;
+            responseContext.StatusCode = (int)HttpStatusCode.OK;
+            responseContext.StatusDescription = WebInterfaceServerConstants.HTTP_RESP_DESC_OK;
+
             return responsePayload;
         }
     }
