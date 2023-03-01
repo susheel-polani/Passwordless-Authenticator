@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Passwordless_Authenticator.Models;
+using Passwordless_Authenticator.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,13 +29,11 @@ namespace Passwordless_Authenticator.Services.Keys
         {
             RSAParameters pubkeyParameters = rsa.ExportParameters(false);
 
-            JSONKey publicKey = new JSONKey()
-            {
-                modulus = (pubkeyParameters.Modulus != null ? Convert.ToBase64String(pubkeyParameters.Modulus) : null),
-                exponent = (pubkeyParameters.Exponent != null ? Convert.ToBase64String(pubkeyParameters.Exponent) : null)
-            };
+            JObject publicKey = new JObject();
+            publicKey.Add("modulus", pubkeyParameters.Modulus != null ? Convert.ToBase64String(pubkeyParameters.Modulus) : null);
+            publicKey.Add("exponent", pubkeyParameters.Exponent != null ? Convert.ToBase64String(pubkeyParameters.Exponent) : null);
 
-            return JObject.FromObject(publicKey);
+            return publicKey;
         }
 
         public static JObject getPriKeyParameters(RSA rsa)
@@ -59,18 +58,18 @@ namespace Passwordless_Authenticator.Services.Keys
         public static JObject GenerateKeyInContainer(string containerName)
         {
             // fetchContainer function will create a container if it does not exist or will fetch the existing container.
-            var rsa = RSAKeyContainer.fetchContainer(containerName);
+            var rsa = RSAKeyContainerUtils.fetchContainer(containerName);
             return getPubKeyParameters(rsa);
         }
 
         public static JObject GetPrivateKeyFromContainer(string containerName)
         {
-            var rsa = RSAKeyContainer.fetchContainer(containerName);
+            var rsa = RSAKeyContainerUtils.fetchContainer(containerName);
             return getPriKeyParameters(rsa);
         }
         public static void DeleteKeyFromContainer(string containerName)
         {
-            var rsa = RSAKeyContainer.deleteContainer(containerName);
+            var rsa = RSAKeyContainerUtils.deleteContainer(containerName);
             rsa.Clear();
         }
     }

@@ -5,11 +5,10 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Passwordless_Authenticator.Models
+namespace Passwordless_Authenticator.Utils
 {
-    internal class RSAKeyContainer
+    internal class RSAKeyContainerUtils
     {
-        // Put this file in Utils
         public static RSA fetchContainer(string containerName)
         {
             var parameters = new CspParameters

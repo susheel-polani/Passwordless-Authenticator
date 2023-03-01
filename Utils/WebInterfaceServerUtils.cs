@@ -78,8 +78,8 @@ namespace Passwordless_Authenticator.Utils
         /// <param name="endpoint"></param>
         /// <param name="methodType"></param>
         /// <returns> MethodInfo </returns>
-        public static MethodInfo getMethod(Type classType, string endpoint, string methodType) {            
-            
+        public static MethodInfo getMethod(Type classType, string endpoint, string methodType) {
+
 
             try
             {

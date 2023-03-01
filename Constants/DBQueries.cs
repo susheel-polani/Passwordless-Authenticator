@@ -30,7 +30,7 @@ namespace Passwordless_Authenticator.Constants
             CREATE TABLE IF NOT EXISTS `user_data` (
               domain_id uuid REFERENCES domains(domain_id),
               user_id uuid PRIMARY KEY,
-              username varchar(255) UNIQUE,
+              username varchar(255),
               key_container_id varchar(255) UNIQUE
             );";
 
@@ -43,6 +43,10 @@ namespace Passwordless_Authenticator.Constants
 
 
         // Business logic queries
+        public const string SELECT_DOMAIN = $"SELECT domain_id FROM domains WHERE domain_name={PARAM_DOMAIN_NAME}";
+
+        public const string SELECT_DOMAIN_USER = $"SELECT user_id FROM user_data WHERE domain_id={PARAM_DOMAIN_ID} and username={PARAM_USER_NAME}";
+
         public const string INSERT_DOMAIN = $"INSERT INTO domains (domain_id, domain_name) VALUES({PARAM_DOMAIN_ID}, {PARAM_DOMAIN_NAME})";
 
         public const string INSERT_USER_DATA = @$"INSERT INTO 

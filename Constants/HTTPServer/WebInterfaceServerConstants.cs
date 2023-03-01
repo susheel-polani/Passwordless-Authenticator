@@ -16,9 +16,15 @@ namespace Passwordless_Authenticator.Constants.HTTPServer
         public const string HTTP_METHOD_DELETE = "DELETE";
         
         public static readonly string HTTP_RESP_DESC_OK = "OK";
+        public static readonly string HTTP_RESP_UNAUTHORIZED = "Unauthorized access to Key Vault";
+        public static readonly string HTTP_RESP_INTERNAL_ERR = "Internal Server Error";
 
         public const string ERR_LISTENER_NOT_SUPPORTED = "Listener Not Supported !";
         public static readonly string ERR_URL_NOT_FOUND = "URL Not found";
         public static readonly string ERR_REMOTE_ACCESS = "Access Denied. Remote Access Not Allowed";
+
+        public static readonly string USER_ALREADY_EXISTS = "Username for this Domain already exists";
+        public static readonly string KEY_GEN_SUCCESS = "Key Pair Successfully generated!";
+        public static readonly string WINDOWS_AUTH_FAIL = "Windows Authentication Failed!";
     }
 }

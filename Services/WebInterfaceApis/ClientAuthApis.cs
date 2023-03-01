@@ -23,20 +23,16 @@ namespace Passwordless_Authenticator.Services.WebInterfaceApis
             Debug.WriteLine("POST /client-auth/signup");
 
             HttpListenerRequest request = context.Request;
-
             var requestParams = WebInterfaceServerUtils.getPayload(request);
 
-            Debug.WriteLine("Domain: " + requestParams.GetValue("domain"));
-            Debug.WriteLine("Username: " + requestParams.GetValue("username"));
-
-            string containerName = requestParams.GetValue("domain").ToString() + requestParams.GetValue("username").ToString();
-            Debug.WriteLine("Container Name: " + containerName);
+            string domainName = requestParams.GetValue("domain").ToString();
+            string userName = requestParams.GetValue("username").ToString();
+            Debug.WriteLine("Domain: " + domainName);
+            Debug.WriteLine("Username: " + userName);
 
             var responsePayload = new ResponsePayload();
-            responsePayload = await ClientAuthServices.SignUp(containerName);
+            responsePayload = await ClientAuthServices.SignUp(domainName, userName, context);
             var response = context.Response;
-            response.StatusCode = (int)HttpStatusCode.OK;
-            response.StatusDescription = WebInterfaceServerConstants.HTTP_RESP_DESC_OK;
 
             WebInterfaceServerUtils.sendResponse(response, responsePayload);
         }
