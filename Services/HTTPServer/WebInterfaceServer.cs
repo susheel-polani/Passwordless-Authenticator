@@ -16,6 +16,7 @@ using System.Web;
 using Windows.Security.Credentials.UI;
 
 using Passwordless_Authenticator.Utils;
+using Windows.Storage.Streams;
 
 namespace Passwordless_Authenticator.Services.HTTPServer
 {
@@ -44,7 +45,20 @@ namespace Passwordless_Authenticator.Services.HTTPServer
                 {
                     HttpListenerContext context = listener.GetContext();
                     HttpListenerRequest request = context.Request;
-
+                    var response = context.Response;
+                    if (request.HttpMethod == "OPTIONS")
+                    {
+                        response.AddHeader("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With");
+                        response.AddHeader("Access-Control-Allow-Methods", "GET, POST");
+                        response.AddHeader("Access-Control-Max-Age", "1728000");
+                        response.AppendHeader("Access-Control-Allow-Origin", "*");
+                        byte[] buffer = Encoding.UTF8.GetBytes("CORS Test");
+                        Stream output = response.OutputStream;
+                        output.Write(buffer, 0, buffer.Length);
+                        output.Close();
+                    }
+                    response.AppendHeader("Access-Control-Allow-Origin", "*");
+                    Debug.WriteLine(request.Url);
                     WebInterfaceServerUtils.invokeEndpoint(context);                    
 
                 }

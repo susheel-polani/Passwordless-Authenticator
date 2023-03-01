@@ -1,9 +1,12 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Passwordless_Authenticator.Models;
+using Passwordless_Authenticator.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,22 +25,18 @@ namespace Passwordless_Authenticator.Services.Keys
             public string inverseq { get; set; }
             public string d { get; set; }
         }
-        public static string getPubKeyParameters(RSA rsa)
+        public static JObject getPubKeyParameters(RSA rsa)
         {
             RSAParameters pubkeyParameters = rsa.ExportParameters(false);
 
-            JSONKey publicKey = new JSONKey()
-            {
-                modulus = (pubkeyParameters.Modulus != null ? Convert.ToBase64String(pubkeyParameters.Modulus) : null),
-                exponent = (pubkeyParameters.Exponent != null ? Convert.ToBase64String(pubkeyParameters.Exponent) : null)
-            };
+            JObject publicKey = new JObject();
+            publicKey.Add("modulus", pubkeyParameters.Modulus != null ? Convert.ToBase64String(pubkeyParameters.Modulus) : null);
+            publicKey.Add("exponent", pubkeyParameters.Exponent != null ? Convert.ToBase64String(pubkeyParameters.Exponent) : null);
 
-            string stringjson = JsonConvert.SerializeObject(publicKey);
-
-            return stringjson;
+            return publicKey;
         }
 
-        public static string getPriKeyParameters(RSA rsa)
+        public static JObject getPriKeyParameters(RSA rsa)
         {
             RSAParameters prikeyParameters = rsa.ExportParameters(true);
 
@@ -54,25 +53,23 @@ namespace Passwordless_Authenticator.Services.Keys
 
             };
 
-            string stringjson = JsonConvert.SerializeObject(privateKey);
-
-            return stringjson;
+            return JObject.FromObject(privateKey);
         }
-        public static string GenerateKeyInContainer(string containerName)
+        public static JObject GenerateKeyInContainer(string containerName)
         {
             // fetchContainer function will create a container if it does not exist or will fetch the existing container.
-            var rsa = RSAKeyContainer.fetchContainer(containerName);
+            var rsa = RSAKeyContainerUtils.fetchContainer(containerName);
             return getPubKeyParameters(rsa);
         }
 
-        public static string GetPrivateKeyFromContainer(string containerName)
+        public static JObject GetPrivateKeyFromContainer(string containerName)
         {
-            var rsa = RSAKeyContainer.fetchContainer(containerName);
+            var rsa = RSAKeyContainerUtils.fetchContainer(containerName);
             return getPriKeyParameters(rsa);
         }
         public static void DeleteKeyFromContainer(string containerName)
         {
-            var rsa = RSAKeyContainer.deleteContainer(containerName);
+            var rsa = RSAKeyContainerUtils.deleteContainer(containerName);
             rsa.Clear();
         }
     }
