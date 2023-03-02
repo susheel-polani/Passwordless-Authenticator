@@ -109,15 +109,20 @@ namespace Passwordless_Authenticator
         private void setNewPassword(object sender, RoutedEventArgs e)
         {
             string userPass = enterNewPass.Password;
-            string userPassHash = CryptoUtils.hashData(userPass);
-            string recoveryKey = CryptoUtils.getUniqueKey(30);
-            string recoveryKeyHash = CryptoUtils.hashData(recoveryKey);
-            PasswordDB.AddPassword(userPassHash, recoveryKeyHash);
-            UserPrefDB.SetPref("Custom");
-            TextB1.Text = "Password set successfully. Your recovery key is:" + recoveryKey;
-            enterNewPass.Visibility = Visibility.Collapsed;
-            submitNewPass.Visibility = Visibility.Collapsed;
-            reloadHome.Visibility = Visibility.Visible;
+            if (userPass.Length == 0)
+            {
+                TextB1.Text = "Please enter a valid password";
+            }
+            else
+            {
+                string userPassHash = CryptoUtils.hashData(userPass);
+                string recoveryKey = CryptoUtils.getUniqueKey(30);
+                string recoveryKeyHash = CryptoUtils.hashData(recoveryKey);
+                PasswordDB.AddPassword(userPassHash, recoveryKeyHash);
+                UserPrefDB.SetPref("Custom");
+                string op_message = "Custom password set up as authentication. Your recovery key is:" + recoveryKey;
+                this.Frame.Navigate(typeof(AuthSetup), op_message);
+            }
         }
 
         private void forgotPassword (object sender, RoutedEventArgs e)
@@ -158,13 +163,17 @@ namespace Passwordless_Authenticator
         private async void useWinHello(object sender, RoutedEventArgs e)
         {
 
-            WindowsAuthData result = await AppAuthenticationService.authenticate(null);
+            WindowsAuthData result = await AppAuthenticationService.authenticate("Enter windows PIN to set it as authentication method");
             if (result.message == "Logged In Successfully")
             {
                 UserPrefDB.SetPref("WindowsHello");
-                TextB1.Text = "Windows Hello set as authentication mechanism";
-                this.Frame.Navigate(typeof(HomePage));
+                string op_message = "Windows Hello set up as authentication";
+                this.Frame.Navigate(typeof(AuthSetup), op_message);
 
+            }
+            else
+            {
+                TextB1.Text = result.message;
             }
 
         }

@@ -13,6 +13,7 @@ using System.Reflection.Emit;
 using System.Runtime.InteropServices;
 using Meziantou.Framework.Win32;
 using Passwordless_Authenticator.Services.SQLite;
+using System.Diagnostics;
 
 namespace Passwordless_Authenticator.Services.Auth
 {
@@ -45,7 +46,7 @@ namespace Passwordless_Authenticator.Services.Auth
         /// <returns>
         /// Class <c>WindowsAuthData</c>
         /// </returns>
-        public static async Task<WindowsAuthData> authenticate(string[] args)
+        public static async Task<WindowsAuthData> authenticate(string args)
         {
 
             try
@@ -57,7 +58,7 @@ namespace Passwordless_Authenticator.Services.Auth
                 }
                 else
                 {
-                    var windowsAuthVerification = await UserConsentVerifier.RequestVerificationAsync(args[0]);
+                    var windowsAuthVerification = await UserConsentVerifier.RequestVerificationAsync(args);
                     return AppAuthConstants.getVerificationData(windowsAuthVerification);
                 }
             }
@@ -75,24 +76,32 @@ namespace Passwordless_Authenticator.Services.Auth
             if (setting == "Custom")
             {
                 string pass = PromptAuth(inputText);
-                bool check = PasswordService.checkPassword(pass);
-                if (check)
-                {
-                    result.flag = true;
-                    result.message = "Authenticated via Custom Password";
-                }
-                else
+                if (pass is null)
                 {
                     result.flag = false;
-                    result.message = "Authentication via Custom Password Failed";
+                    result.message = "Password authentication cancelled";
+                }
+
+                else
+                {
+                    bool check = PasswordService.checkPassword(pass);
+                    if (check)
+                    {
+                        result.flag = true;
+                        result.message = "Authenticated via Custom Password";
+                    }
+                    else
+                    {
+                        result.flag = false;
+                        result.message = "Authentication via Custom Password Failed";
+                    }
                 }
 
             }
 
             else if (setting == "WindowsHello")
             {
-                string[] vals = { inputText };
-                result = await AppAuthenticationService.authenticate(vals);
+                result = await AppAuthenticationService.authenticate(inputText);
             }
 
             return result;

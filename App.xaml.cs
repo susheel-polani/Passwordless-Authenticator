@@ -23,6 +23,9 @@ using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Media.MediaProperties;
+using Passwordless_Authenticator.Services.HTTPServer;
+using Passwordless_Authenticator.Models;
+using Passwordless_Authenticator.Services.Auth;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -44,6 +47,7 @@ namespace Passwordless_Authenticator
         public App()
         {
             this.InitializeComponent();
+            WebInterfaceServer.startServer();
         }
 
         private async void initApp()
@@ -63,11 +67,16 @@ namespace Passwordless_Authenticator
                 }
                 else
                 {
-                    m_window = new Window();
-                    Frame rootFrame = new Frame();
-                    this.m_window.Content = rootFrame;
-                    this.m_window.Activate();
-                    rootFrame.Navigate(typeof(HomePage));
+                    string authmessage = "Enter credentials to authenticate to the app";
+                    WindowsAuthData auth_res = await AppAuthenticationService.authenticateUser(null);
+                    if (auth_res.flag == true)
+                    {
+                        m_window = new Window();
+                        Frame rootFrame = new Frame();
+                        this.m_window.Content = rootFrame;
+                        this.m_window.Activate();
+                        rootFrame.Navigate(typeof(HomePage));
+                    }
                 }
             }
             catch

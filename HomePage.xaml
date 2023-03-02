@@ -48,7 +48,7 @@
             <PasswordBox x:Name="enterNewPass" Visibility="Collapsed"></PasswordBox>
             <Button x:Name="submitNewPass" Visibility="Collapsed" Click="setNewPassword">Submit</Button>
             
-            <Button x:Name="reloadHome" Visibility="Collapsed" Click="reloadHomePage">Go Home</Button>
+            <Button x:Name="reloadHome" Visibility="Visible" Click="reloadHomePage">Go Home</Button>
 
         </StackPanel>
     </Grid>

@@ -67,10 +67,21 @@ namespace Passwordless_Authenticator
             this.Frame.Navigate(typeof(BlankPage1));
         }
 
-        private void useWindows(object sender, RoutedEventArgs e)
+        private async void useWindows(object sender, RoutedEventArgs e)
         {
-            UserPrefDB.SetPref("WindowsHello");
-            this.Frame.Navigate(typeof(HomePage));
+            WindowsAuthData result = await AppAuthenticationService.authenticate("Enter windows PIN to set it as authentication method");
+            if (result.message == "Logged In Successfully")
+            {
+                UserPrefDB.SetPref("WindowsHello");
+                string op_message = "Windows Hello set up as authentication";
+                this.Frame.Navigate(typeof(AuthSetup), op_message);
+
+            }
+            else
+            {
+                TextB1.Text = result.message;
+            }
+
         }
     }
 }
