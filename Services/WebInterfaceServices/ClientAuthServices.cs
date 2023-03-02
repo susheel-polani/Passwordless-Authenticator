@@ -27,7 +27,7 @@ namespace Passwordless_Authenticator.Services.SignUp
             var responseContext = context.Response;
             if (result.flag)
             {
-                if(!UserAuthDataController.insertUserData(domainName, userName, containerName))
+                if (!UserAuthDataController.insertUserData(domainName, userName, containerName))
                 {
                     responsePayload.isSuccess = false;
                     responsePayload.message = WebInterfaceServerConstants.USER_ALREADY_EXISTS;
@@ -59,7 +59,7 @@ namespace Passwordless_Authenticator.Services.SignUp
         {
             List<JObject> rows = UserAuthDataController.getUsernames(domainName);
             JArray usernameList = new JArray();
-            for(int i=0;i < rows.Count;i++)
+            for (int i = 0; i < rows.Count; i++)
             {
                 usernameList.Add(rows[i].GetValue("username").ToString());
             }
@@ -74,6 +74,48 @@ namespace Passwordless_Authenticator.Services.SignUp
             responseContext.StatusCode = (int)HttpStatusCode.OK;
             responseContext.StatusDescription = WebInterfaceServerConstants.HTTP_RESP_DESC_OK;
 
+            return responsePayload;
+        }
+
+        public static async Task<ResponsePayload> encryptServerMessage(string domainName, string userName, string serverMessage, HttpListenerContext context)
+        {
+            string containerName = domainName + userName;
+            string cipherText = RSAKeyServices.AsymmEncrypt(containerName, serverMessage);
+            JObject result = new JObject();
+            result.Add("cipherText", cipherText);
+
+            var responsePayload = new ResponsePayload();
+            var responseContext = context.Response;
+            responsePayload.isSuccess = true;
+            responsePayload.message = WebInterfaceServerConstants.SEVER_MSG_ENCRYPT_SUCCESS;
+            responsePayload.payload = result;
+            responseContext.StatusCode = (int)HttpStatusCode.OK;
+            responseContext.StatusDescription = WebInterfaceServerConstants.HTTP_RESP_DESC_OK;
+
+            return responsePayload;
+        }
+
+        public static async Task<ResponsePayload> getPublicKey(string domainName, string userName, HttpListenerContext context)
+        {
+            string containerName = domainName + userName;
+            JObject result = RSAKeyServices.GetPublicKeyFromContainer(containerName);
+            var responsePayload = new ResponsePayload();
+            var responseContext = context.Response;
+            if (result!=null)
+            {
+                responsePayload.isSuccess = true;
+                responsePayload.message = WebInterfaceServerConstants.PUB_KEY_FETCH_SUCCESS;
+                responsePayload.payload = result;
+                responseContext.StatusCode = (int)HttpStatusCode.OK;
+                responseContext.StatusDescription = WebInterfaceServerConstants.HTTP_RESP_DESC_OK;
+            }
+            else
+            {
+                responsePayload.isSuccess = false;
+                responsePayload.message = WebInterfaceServerConstants.PUB_KEY_DOES_NOT_EXIST;
+                responseContext.StatusCode = (int)HttpStatusCode.InternalServerError;
+                responseContext.StatusDescription = WebInterfaceServerConstants.ERR_HTTP_INTERNAL_ERROR;
+            }
             return responsePayload;
         }
     }

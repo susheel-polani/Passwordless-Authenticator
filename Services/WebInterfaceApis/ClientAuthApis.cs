@@ -53,5 +53,47 @@ namespace Passwordless_Authenticator.Services.WebInterfaceApis
 
             WebInterfaceServerUtils.sendResponse(response, responsePayload);
         }
+
+        [PostEndpoint("/encrypt-message")]
+        public async void encryptMessage(HttpListenerContext context)
+        {
+            Debug.WriteLine("POST /client-auth/encrypt-message");
+
+            HttpListenerRequest request = context.Request;
+            var requestParams = WebInterfaceServerUtils.getPayload(request);
+
+            string domainName = requestParams.GetValue("domain").ToString();
+            string userName = requestParams.GetValue("username").ToString();
+            string serverMessage = requestParams.GetValue("serverMessage").ToString();
+            Debug.WriteLine("Domain: " + domainName);
+            Debug.WriteLine("Username: " + userName);
+            Debug.WriteLine("Server Message: " + serverMessage);
+
+            var responsePayload = new ResponsePayload();
+            responsePayload = await ClientAuthServices.encryptServerMessage(domainName, userName, serverMessage, context);
+            var response = context.Response;
+
+            WebInterfaceServerUtils.sendResponse(response, responsePayload);
+        }
+
+        [PostEndpoint("/get-key")]
+        public async void getKey(HttpListenerContext context)
+        {
+            Debug.WriteLine("POST /client-auth/get-key");
+
+            HttpListenerRequest request = context.Request;
+            var requestParams = WebInterfaceServerUtils.getPayload(request);
+
+            string domainName = requestParams.GetValue("domain").ToString();
+            string userName = requestParams.GetValue("username").ToString();
+            Debug.WriteLine("Domain: " + domainName);
+            Debug.WriteLine("Username: " + userName);
+
+            var responsePayload = new ResponsePayload();
+            responsePayload = await ClientAuthServices.getPublicKey(domainName, userName, context);
+            var response = context.Response;
+
+            WebInterfaceServerUtils.sendResponse(response, responsePayload);
+        }
     }
 }

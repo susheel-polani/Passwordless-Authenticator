@@ -31,5 +31,22 @@ namespace Passwordless_Authenticator.Utils
             };
             return rsa;
         }
+        public static bool doesKeyExist(string containerName)
+        {
+            var parameters = new CspParameters
+            {
+                Flags = CspProviderFlags.UseExistingKey,
+                KeyContainerName = containerName
+            };
+            try
+            {
+                var rsa = new RSACryptoServiceProvider(parameters);
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+            return true;
+        }
     }
 }

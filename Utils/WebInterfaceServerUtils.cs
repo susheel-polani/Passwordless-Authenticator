@@ -25,7 +25,7 @@ namespace Passwordless_Authenticator.Utils
         {
             HttpListenerRequest request = context.Request;
             HttpListenerResponse response = context.Response;
-            if (request.HttpMethod == "OPTIONS")
+            if (request.HttpMethod == WebInterfaceServerConstants.HTTP_METHOD_OPTIONS)
             {
                 response.AddHeader("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With");
                 response.AddHeader("Access-Control-Allow-Methods", "GET, POST");
