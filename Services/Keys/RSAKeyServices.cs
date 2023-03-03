@@ -62,6 +62,16 @@ namespace Passwordless_Authenticator.Services.Keys
             return getPubKeyParameters(rsa);
         }
 
+        public static JObject GetPublicKeyFromContainer(string containerName)
+        {
+            if(RSAKeyContainerUtils.doesKeyExist(containerName))
+            {
+                var rsa = RSAKeyContainerUtils.fetchContainer(containerName);
+                return getPubKeyParameters(rsa);
+            }
+            return null;
+        }
+
         public static JObject GetPrivateKeyFromContainer(string containerName)
         {
             var rsa = RSAKeyContainerUtils.fetchContainer(containerName);
@@ -71,6 +81,13 @@ namespace Passwordless_Authenticator.Services.Keys
         {
             var rsa = RSAKeyContainerUtils.deleteContainer(containerName);
             rsa.Clear();
+        }
+        public static string AsymmEncrypt(string containerName, string plaintext)
+        {
+            var rsa = RSAKeyContainerUtils.fetchContainer(containerName);
+            byte[] encryptedAsBytes = rsa.Encrypt(Encoding.UTF8.GetBytes(plaintext), RSAEncryptionPadding.OaepSHA1);
+            string encryptedAsBase64 = Convert.ToBase64String(encryptedAsBytes);
+            return encryptedAsBase64;
         }
     }
 }

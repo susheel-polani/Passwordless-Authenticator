@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Passwordless_Authenticator.Constants.HTTPServer;
 using Passwordless_Authenticator.Dao_controllers;
 using Passwordless_Authenticator.Models;
@@ -26,12 +27,12 @@ namespace Passwordless_Authenticator.Services.SignUp
             var responseContext = context.Response;
             if (result.flag)
             {
-                if(!UserAuthDataController.insertUserData(domainName, userName, containerName))
+                if (!UserAuthDataController.insertUserData(domainName, userName, containerName))
                 {
                     responsePayload.isSuccess = false;
                     responsePayload.message = WebInterfaceServerConstants.USER_ALREADY_EXISTS;
                     responseContext.StatusCode = (int)HttpStatusCode.InternalServerError;
-                    responseContext.StatusDescription = WebInterfaceServerConstants.HTTP_RESP_INTERNAL_ERR;
+                    responseContext.StatusDescription = WebInterfaceServerConstants.ERR_HTTP_INTERNAL_ERROR;
                 }
                 else
                 {
@@ -50,6 +51,70 @@ namespace Passwordless_Authenticator.Services.SignUp
                 responsePayload.message = WebInterfaceServerConstants.WINDOWS_AUTH_FAIL;
                 responseContext.StatusCode = (int)HttpStatusCode.Forbidden;
                 responseContext.StatusDescription = WebInterfaceServerConstants.HTTP_RESP_UNAUTHORIZED;
+            }
+            return responsePayload;
+        }
+
+        public static async Task<ResponsePayload> fetchUsernames(string domainName, HttpListenerContext context)
+        {
+            List<JObject> rows = UserAuthDataController.getUsernames(domainName);
+            JArray usernameList = new JArray();
+            for (int i = 0; i < rows.Count; i++)
+            {
+                usernameList.Add(rows[i].GetValue("username").ToString());
+            }
+            JObject result = new JObject(new JProperty("usernames", usernameList));
+            Debug.WriteLine(JsonConvert.SerializeObject(result));
+
+            var responsePayload = new ResponsePayload();
+            var responseContext = context.Response;
+            responsePayload.isSuccess = true;
+            responsePayload.message = WebInterfaceServerConstants.USERNAME_FETCH_SUCCESS;
+            responsePayload.payload = result;
+            responseContext.StatusCode = (int)HttpStatusCode.OK;
+            responseContext.StatusDescription = WebInterfaceServerConstants.HTTP_RESP_DESC_OK;
+
+            return responsePayload;
+        }
+
+        public static async Task<ResponsePayload> encryptServerMessage(string domainName, string userName, string serverMessage, HttpListenerContext context)
+        {
+            string containerName = domainName + userName;
+            string cipherText = RSAKeyServices.AsymmEncrypt(containerName, serverMessage);
+            JObject result = new JObject();
+            result.Add("cipherText", cipherText);
+
+            var responsePayload = new ResponsePayload();
+            var responseContext = context.Response;
+            responsePayload.isSuccess = true;
+            responsePayload.message = WebInterfaceServerConstants.SEVER_MSG_ENCRYPT_SUCCESS;
+            responsePayload.payload = result;
+            responseContext.StatusCode = (int)HttpStatusCode.OK;
+            responseContext.StatusDescription = WebInterfaceServerConstants.HTTP_RESP_DESC_OK;
+
+            return responsePayload;
+        }
+
+        public static async Task<ResponsePayload> getPublicKey(string domainName, string userName, HttpListenerContext context)
+        {
+            string containerName = domainName + userName;
+            JObject result = RSAKeyServices.GetPublicKeyFromContainer(containerName);
+            var responsePayload = new ResponsePayload();
+            var responseContext = context.Response;
+            if (result!=null)
+            {
+                responsePayload.isSuccess = true;
+                responsePayload.message = WebInterfaceServerConstants.PUB_KEY_FETCH_SUCCESS;
+                responsePayload.payload = result;
+                responseContext.StatusCode = (int)HttpStatusCode.OK;
+                responseContext.StatusDescription = WebInterfaceServerConstants.HTTP_RESP_DESC_OK;
+            }
+            else
+            {
+                responsePayload.isSuccess = false;
+                responsePayload.message = WebInterfaceServerConstants.PUB_KEY_DOES_NOT_EXIST;
+                responseContext.StatusCode = (int)HttpStatusCode.InternalServerError;
+                responseContext.StatusDescription = WebInterfaceServerConstants.ERR_HTTP_INTERNAL_ERROR;
             }
             return responsePayload;
         }

@@ -20,6 +20,24 @@ namespace Passwordless_Authenticator.Utils
 {
     internal class WebInterfaceServerUtils
     {
+
+        public static void enableCORS(HttpListenerContext context)
+        {
+            HttpListenerRequest request = context.Request;
+            HttpListenerResponse response = context.Response;
+            if (request.HttpMethod == WebInterfaceServerConstants.HTTP_METHOD_OPTIONS)
+            {
+                response.AddHeader("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With");
+                response.AddHeader("Access-Control-Allow-Methods", "GET, POST");
+                response.AddHeader("Access-Control-Max-Age", "1728000");
+                response.AppendHeader("Access-Control-Allow-Origin", "*");
+                byte[] buffer = Encoding.UTF8.GetBytes("CORS Test");
+                Stream output = response.OutputStream;
+                output.Write(buffer, 0, buffer.Length);
+                output.Close();
+            }
+            response.AppendHeader("Access-Control-Allow-Origin", "*");
+        }
         /// <summary>
         /// This method executes the corresponding end-points
         /// </summary>

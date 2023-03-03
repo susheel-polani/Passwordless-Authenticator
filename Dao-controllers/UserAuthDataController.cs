@@ -115,5 +115,15 @@ namespace Passwordless_Authenticator.Dao_controllers
 
             return result;
         }
+
+        public static List<JObject> getUsernames(string domainName)
+        {
+            List<SqliteParameter> parameters = new List<SqliteParameter> {
+                new SqliteParameter(DBQueries.PARAM_DOMAIN_NAME, domainName),
+            };
+
+            List<JObject> result = DataAccess.executeQuery(DBQueries.GET_USERNAMES, parameters);
+            return result;
+        }
     }
 }

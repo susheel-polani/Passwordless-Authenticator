@@ -57,6 +57,9 @@ namespace Passwordless_Authenticator.Constants
                                                 WHERE domain_id = (SELECT domain_id FROM domains WHERE domain_name = {PARAM_DOMAIN_NAME}) 
                                                 AND username={PARAM_USER_NAME}";
 
+        public const string GET_USERNAMES = @$"SELECT username FROM user_data 
+                                                WHERE domain_id = (SELECT domain_id FROM domains WHERE domain_name = {PARAM_DOMAIN_NAME})";
+
 
 
 
