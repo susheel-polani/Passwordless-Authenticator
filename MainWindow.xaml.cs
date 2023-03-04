@@ -23,6 +23,10 @@ using Passwordless_Authenticator.Constants;
 using Microsoft.Data.Sqlite;
 using System.Diagnostics;
 using Passwordless_Authenticator.Dao_controllers;
+using Microsoft.UI.Windowing;
+using Microsoft.UI;
+using System.Threading.Tasks;
+using WinRT.Interop;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -34,12 +38,17 @@ namespace Passwordless_Authenticator
     /// </summary>
     public sealed partial class MainWindow : Window
     {
+        private AppWindow _appWindow;
         public MainWindow()
         {
             this.InitializeComponent();
             WebInterfaceServer.startServer();
             DataAccess.setUpDatabase();
 
+            this.Closed += OnClosed;
+
+            _appWindow = GetAppWindowForCurrentWindow();
+            _appWindow.Closing += OnClosing;
         }
 
             
@@ -56,6 +65,33 @@ namespace Passwordless_Authenticator
             }
 
            
+        }
+
+        private void OnClosed(object sender, WindowEventArgs e)
+        {
+            string btnText = myButton.Content.ToString();
+        }
+
+
+        private async void OnClosing(object sender, AppWindowClosingEventArgs e)
+        {
+
+            string btnText = myButton.Content.ToString();
+
+            e.Cancel = true;     //Cancel close
+                                 //Otherwise, the program will not wait for the task to execute, and the main thread will close immediately
+
+            //await System.Threading.Tasks.Task.Delay(5000); //wait for 5 seconds (= 5000ms)
+
+            //this.Close();   //close
+        }
+
+
+        private AppWindow GetAppWindowForCurrentWindow()
+        {
+            IntPtr hWnd = WindowNative.GetWindowHandle(this);
+            WindowId myWndId = Win32Interop.GetWindowIdFromWindow(hWnd);
+            return AppWindow.GetFromWindowId(myWndId);
         }
     }
 }
