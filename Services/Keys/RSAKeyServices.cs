@@ -85,7 +85,8 @@ namespace Passwordless_Authenticator.Services.Keys
         public static string AsymmEncrypt(string containerName, string plaintext)
         {
             var rsa = RSAKeyContainerUtils.fetchContainer(containerName);
-            byte[] encryptedAsBytes = rsa.Encrypt(Encoding.UTF8.GetBytes(plaintext), RSAEncryptionPadding.OaepSHA1);
+
+            byte[] encryptedAsBytes = rsa.SignData(Encoding.UTF8.GetBytes(plaintext), HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1); //rsa.Encrypt(Encoding.UTF8.GetBytes(plaintext), RSAEncryptionPadding.OaepSHA1);
             string encryptedAsBase64 = Convert.ToBase64String(encryptedAsBytes);
             return encryptedAsBase64;
         }
