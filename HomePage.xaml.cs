@@ -42,12 +42,15 @@ namespace Passwordless_Authenticator
 
         private async void changeAuthMethod(object sender, RoutedEventArgs e)
         {
-            changeAuthentication.Visibility = Visibility.Collapsed;
+            reloadHomeBrdr.Visibility = Visibility.Visible;
+            exportKBrdr.Visibility = Visibility.Collapsed;
+            importKBrdr.Visibility = Visibility.Collapsed;
+            changeAuthenticationBrdr.Visibility = Visibility.Collapsed;
             string preference = UserPrefDB.GetPref();
             if (preference == "Custom")
             {
-                TextB2.Text = "Current authentication mechanism is a custom password";
-                changePass.Visibility = Visibility.Visible;
+                TextB1.Text = "Current authentication mechanism is a custom password";
+                changePassBrdr.Visibility = Visibility.Visible;
                 bool authAvail = await AppAuthenticationService.isAuthSetup();
                 if (authAvail == false)
                 {
@@ -59,33 +62,33 @@ namespace Passwordless_Authenticator
                 else
                 {
                     TextB1.Text = "Windows Hello available";
-                    useHello.Visibility = Visibility.Visible;
+                    useHelloBrdr.Visibility = Visibility.Visible;
                 }
 
             }
             else
             {
-                TextB2.Text = "Current authentication mechanism is Windows Hello";
-                setPass.Visibility = Visibility.Visible;
+                TextB1.Text = "Current authentication mechanism is Windows Hello";
+                setPassBrdr.Visibility = Visibility.Visible;
             }
         }
 
         private void setPassword(object sender, RoutedEventArgs e)
         {
             TextB1.Text = "Enter your new password";
-            setPass.Visibility = Visibility.Collapsed;
-            useHello.Visibility = Visibility.Collapsed;
-            enterNewPass.Visibility = Visibility.Visible;
-            submitNewPass.Visibility = Visibility.Visible;
+            setPassBrdr.Visibility = Visibility.Collapsed;
+            useHelloBrdr.Visibility = Visibility.Collapsed;
+            enterNewPassBrdr.Visibility = Visibility.Visible;
+            submitNewPassBrdr.Visibility = Visibility.Visible;
         }
 
         private void changePassword(object sender, RoutedEventArgs e)
         {
-            enterPass.Visibility = Visibility.Visible;
-            submitPass.Visibility = Visibility.Visible;
-            changePass.Visibility = Visibility.Collapsed;
+            enterPassBrdr.Visibility = Visibility.Visible;
+            submitPassBrdr.Visibility = Visibility.Visible;
+            changePassBrdr.Visibility = Visibility.Collapsed;
             TextB1.Text = "Enter your password to set a new one";
-            useHello.Visibility = Visibility.Collapsed;
+            useHelloBrdr.Visibility = Visibility.Collapsed;
         }
 
         private void checkPassword(object sender, RoutedEventArgs e)
@@ -94,15 +97,15 @@ namespace Passwordless_Authenticator
             if (check)
             {
                 TextB1.Text = "Password entered correctly, enter your new password";
-                enterPass.Visibility = Visibility.Collapsed;
-                submitPass.Visibility = Visibility.Collapsed;
-                enterNewPass.Visibility = Visibility.Visible;
-                submitNewPass.Visibility = Visibility.Visible;
+                enterPassBrdr.Visibility = Visibility.Collapsed;
+                submitPassBrdr.Visibility = Visibility.Collapsed;
+                enterNewPassBrdr.Visibility = Visibility.Visible;
+                submitNewPassBrdr.Visibility = Visibility.Visible;
             }
             else
             {
                 TextB1.Text = "Incorrect Password, try again";
-                forgotPass.Visibility = Visibility.Visible;
+                forgotPassBrdr.Visibility = Visibility.Visible;
             }
         }
 
@@ -128,11 +131,11 @@ namespace Passwordless_Authenticator
         private void forgotPassword (object sender, RoutedEventArgs e)
         {
             TextB1.Text = "Enter your recovery key to change password";
-            enterPass.Visibility = Visibility.Collapsed;
-            submitPass.Visibility = Visibility.Collapsed;
-            enterRecoveryKey.Visibility = Visibility.Visible;
-            submitKey.Visibility = Visibility.Visible;
-            forgotPass.Visibility = Visibility.Collapsed;
+            enterPassBrdr.Visibility = Visibility.Collapsed;
+            submitPassBrdr.Visibility = Visibility.Collapsed;
+            enterRecoveryKeyBrdr.Visibility = Visibility.Visible;
+            submitKeyBrdr.Visibility = Visibility.Visible;
+            forgotPassBrdr.Visibility = Visibility.Collapsed;
         }
 
         private void submitRecoveryKey(object sender, RoutedEventArgs e)
@@ -141,10 +144,10 @@ namespace Passwordless_Authenticator
             if (check)
             {
                 TextB1.Text = "Key entered successfully, change your password";
-                enterRecoveryKey.Visibility = Visibility.Collapsed;
-                submitKey.Visibility = Visibility.Collapsed;
-                enterNewPass.Visibility = Visibility.Visible;
-                submitNewPass.Visibility = Visibility.Visible;
+                enterRecoveryKeyBrdr.Visibility = Visibility.Collapsed;
+                submitKeyBrdr.Visibility = Visibility.Collapsed;
+                enterNewPassBrdr.Visibility = Visibility.Visible;
+                submitNewPassBrdr.Visibility = Visibility.Visible;
             }
             else
             {
@@ -154,11 +157,25 @@ namespace Passwordless_Authenticator
 
         private void reloadHomePage(object sender, RoutedEventArgs e)
         {
-            changeAuthentication.Visibility = Visibility.Visible;
-            reloadHome.Visibility = Visibility.Collapsed;
-            TextB1.Text = "HOME PAGE.";
-            TextB2.Text = "HOME PAGE.";
+            changeAuthenticationBrdr.Visibility = Visibility.Visible;
+            exportKBrdr.Visibility = Visibility.Visible;
+            importKBrdr.Visibility = Visibility.Visible;
 
+            reloadHomeBrdr.Visibility = Visibility.Collapsed;
+            changePassBrdr.Visibility = Visibility.Collapsed;
+            useHelloBrdr.Visibility = Visibility.Collapsed;
+            enterPassBrdr.Visibility = Visibility.Collapsed;
+            submitPassBrdr.Visibility = Visibility.Collapsed;
+            setPassBrdr.Visibility = Visibility.Collapsed;
+            forgotPassBrdr.Visibility = Visibility.Collapsed;
+            enterRecoveryKeyBrdr.Visibility = Visibility.Collapsed;
+            submitKeyBrdr.Visibility = Visibility.Collapsed;
+            enterNewPassBrdr.Visibility = Visibility.Collapsed;
+            submitNewPassBrdr.Visibility = Visibility.Collapsed;
+            reloadHomeBrdr.Visibility = Visibility.Collapsed;
+
+
+            TextB1.Text = "HOME PAGE.";
         }
         private async void useWinHello(object sender, RoutedEventArgs e)
         {
@@ -181,8 +198,21 @@ namespace Passwordless_Authenticator
         private async void genPrompt(object sender, RoutedEventArgs e)
         {
             WindowsAuthData result = await AppAuthenticationService.authenticateUser("Enter your credentials to authenticate");
-            TextB1.Text = result.flag.ToString();
-            TextB2.Text = result.message;
+            TextB1.Text = result.flag.ToString() + "." + result.message;
+        }
+
+        private void pageLoaded(object sender, RoutedEventArgs e)
+        {
+            string preference = UserPrefDB.GetPref();
+            if (preference == "Custom")
+            {
+                currentMethod.Text = " Custom Password";
+            }
+            else
+            {
+                currentMethod.Text = " Windows Hello";
+            }
+        
         }
     }
 }

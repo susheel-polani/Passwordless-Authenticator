@@ -68,7 +68,7 @@ namespace Passwordless_Authenticator
                 else
                 {
                     string authmessage = "Enter credentials to authenticate to the app";
-                    WindowsAuthData auth_res = await AppAuthenticationService.authenticateUser(null);
+                    WindowsAuthData auth_res = await AppAuthenticationService.authenticateUser(authmessage);
                     if (auth_res.flag == true)
                     {
                         m_window = new Window();

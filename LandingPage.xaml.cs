@@ -50,14 +50,14 @@ namespace Passwordless_Authenticator
                 // Key credential is not enabled yet as user 
                 // needs to connect to a Microsoft Account and select a PIN in the connecting flow.
                 TextB1.Text = "Windows Hello is not setup!\nPlease go to Windows Settings and set it up, or use a custom password";
-                useCustom.Visibility = Visibility.Visible;
+                useCustomBrdr.Visibility = Visibility.Visible;
             }
 
             else
             {
                 TextB1.Text = "Windows Hello available. Do you want to use that for authentication?";
-                usePassport.Visibility = Visibility.Visible;
-                useCustom.Visibility = Visibility.Visible;
+                usePassportBrdr.Visibility = Visibility.Visible;
+                useCustomBrdr.Visibility = Visibility.Visible;
             }
 
         }

@@ -20,13 +20,11 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Passwordless_Authenticator.Services.SQLite;
 using System.ComponentModel.Design;
 
 using Microsoft.Extensions.Configuration;
 using Passwordless_Authenticator.Constants;
 using Microsoft.Data.Sqlite;
-using System.Diagnostics;
 using Passwordless_Authenticator.Dao_controllers;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -43,7 +41,6 @@ namespace Passwordless_Authenticator
         {
             this.InitializeComponent();
             WebInterfaceServer.startServer();
-            DataAccess.setUpDatabase();
 
         }
 
