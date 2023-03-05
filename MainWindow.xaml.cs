@@ -40,33 +40,17 @@ namespace Passwordless_Authenticator
         public MainWindow()
         {
             this.InitializeComponent();
-            WebInterfaceServer.startServer();
-
-        }
-
-            
-
-        private void myButton_Click(object sender, RoutedEventArgs e)
-        {
-            myButton.Content = "Clicked";
-            Page loginPage = new Login();
-            this.Content = loginPage;
-            /*
-            try
+            string setting = UserPrefDB.GetPref();
+            if (setting == "Empty")
             {
-                UserAuthDataController.test();
+                rootFrame.Navigate(typeof(LandingPage));
             }
-            catch (Exception ex)
+            else
             {
-
-                Debug.WriteLine(ex);
+                rootFrame.Navigate(typeof(HomePage));
             }
-            */
-        }
-
-        private void authenticateUser()
-        {
 
         }
+
     }
 }

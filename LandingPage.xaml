@@ -9,7 +9,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="#130041">
+    Background="#130041"
+    >
 
     <Page.Resources>
         <LinearGradientBrush x:Key="PurleGradient" StartPoint="0,0" EndPoint="1,2">
@@ -92,9 +93,53 @@
                     >
                     <Button                                           
                         x:Name="useCustom"
-                        Click="goToSetPass"
+                        Click="goSetPass"
                     >
                         <TextBlock Text="Use a Custom Password" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0" FontSize="27" TextWrapping="Wrap" Foreground="White"/>
+                    </Button>
+                </Border>
+
+
+                <Border 
+                    Height="50"
+                    Width="300"
+                    CornerRadius="10"
+                    Margin="20,0,20,0"
+                    x:Name="enterNewPassBrdr"
+                    Visibility="Collapsed"
+                    >
+                    <PasswordBox x:Name="enterNewPass" FontSize="30"></PasswordBox>
+                </Border>
+
+                <Border 
+                    Height="150"
+                    Width="300"
+                    CornerRadius="10"
+                    Margin="20,0,20,0"
+                    x:Name="submitPassBrdr"
+                    Visibility="Collapsed"
+                    >
+                    <Button                                           
+                        x:Name="submitPass"
+                        Click="submitPassword"
+                    >
+                        <TextBlock Text="Submit" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0" FontSize="27" TextWrapping="Wrap" Foreground="White"/>
+                    </Button>
+                </Border>
+
+                <Border 
+                    Height="150"
+                    Width="300"
+                    CornerRadius="10"
+                    Margin="20,0,20,0"
+                    x:Name="backButtonBrdr"
+                    Visibility="Collapsed"
+                    >
+                    <Button                                           
+                        x:Name="backButton"
+                        Click="goBack"
+                    >
+                        <TextBlock Text="Go Back" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0" FontSize="27" TextWrapping="Wrap" Foreground="White"/>
                     </Button>
                 </Border>
 
@@ -103,7 +148,7 @@
             </StackPanel>
             <!-- END: MESSAGE BOX-->
             <Border Height="200" Width="600" CornerRadius="10" Grid.Row="2" BorderThickness="1" Background="#44247E">
-                <TextBlock x:Name="TextB1" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+                <TextBlock x:Name="TextB1" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="22" FontWeight="SemiBold" TextWrapping="Wrap"></TextBlock>
             </Border>
 
             <!--END: MESSAGE BOX -->

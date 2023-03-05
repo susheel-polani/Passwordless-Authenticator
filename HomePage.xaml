@@ -149,14 +149,14 @@
                 </Border>
 
                 <Border 
-                    Height="30"
+                    Height="50"
                     Width="300"
                     CornerRadius="10"
                     Margin="20,0,20,0"
                     x:Name="enterPassBrdr"
                     Visibility="Collapsed"
                     >
-                    <PasswordBox x:Name="enterPass"></PasswordBox>
+                    <PasswordBox x:Name="enterPass" FontSize="30"></PasswordBox>
                 </Border>
 
                 <Border 
@@ -208,14 +208,14 @@
                 </Border>
 
                 <Border 
-                    Height="30"
+                    Height="50"
                     Width="300"
                     CornerRadius="10"
                     Margin="20,0,20,0"
                     x:Name="enterRecoveryKeyBrdr"
                     Visibility="Collapsed"
                     >
-                    <PasswordBox x:Name="enterRecoveryKey"></PasswordBox>
+                    <PasswordBox x:Name="enterRecoveryKey" FontSize="30"></PasswordBox>
                 </Border>
 
                 <Border 
@@ -235,14 +235,14 @@
                 </Border>
 
                 <Border 
-                    Height="30"
+                    Height="50"
                     Width="300"
                     CornerRadius="10"
                     Margin="20,0,20,0"
                     x:Name="enterNewPassBrdr"
                     Visibility="Collapsed"
                     >
-                    <PasswordBox x:Name="enterNewPass"></PasswordBox>
+                    <PasswordBox x:Name="enterNewPass" FontSize="30"></PasswordBox>
                 </Border>
 
                 <Border 
@@ -283,8 +283,8 @@
 
             <!--START: MESSAGE BOX placed on row 2-->
 
-            <Border Height="200" Width="600" CornerRadius="10" Grid.Row="2" BorderThickness="1" Background="#44247E">
-                <TextBlock x:Name="TextB1" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center">Sample Text Put Message Box Here</TextBlock>
+            <Border Height="200" Width="600" CornerRadius="10" Grid.Row="2" BorderThickness="1" Background="#44247E" Visibility="Collapsed" x:Name="TextB1Brdr">
+                <TextBlock x:Name="TextB1" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="22" FontWeight="SemiBold">Sample Text Put Message Box Here</TextBlock>
             </Border>
 
             <!--END: MESSAGE BOX -->

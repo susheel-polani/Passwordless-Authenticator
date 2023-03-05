@@ -35,11 +35,6 @@ namespace Passwordless_Authenticator
             this.InitializeComponent();
         }
 
-        private void goToLogin(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(Login));
-        }
-
         private async void changeAuthMethod(object sender, RoutedEventArgs e)
         {
             reloadHomeBrdr.Visibility = Visibility.Visible;
@@ -49,32 +44,31 @@ namespace Passwordless_Authenticator
             string preference = UserPrefDB.GetPref();
             if (preference == "Custom")
             {
-                TextB1.Text = "Current authentication mechanism is a custom password";
-                changePassBrdr.Visibility = Visibility.Visible;
                 bool authAvail = await AppAuthenticationService.isAuthSetup();
                 if (authAvail == false)
                 {
                     // Key credential is not enabled yet as user 
                     // needs to connect to a Microsoft Account and select a PIN in the connecting flow.
+                    TextB1Brdr.Visibility = Visibility.Visible;
                     TextB1.Text = "Windows Hello is not setup!\nPlease go to Windows Settings and set it up to use it as an option";
                 }
 
                 else
                 {
-                    TextB1.Text = "Windows Hello available";
                     useHelloBrdr.Visibility = Visibility.Visible;
+                    changePassBrdr.Visibility = Visibility.Visible;
                 }
 
             }
             else
             {
-                TextB1.Text = "Current authentication mechanism is Windows Hello";
                 setPassBrdr.Visibility = Visibility.Visible;
             }
         }
 
         private void setPassword(object sender, RoutedEventArgs e)
         {
+            TextB1Brdr.Visibility = Visibility.Visible;
             TextB1.Text = "Enter your new password";
             setPassBrdr.Visibility = Visibility.Collapsed;
             useHelloBrdr.Visibility = Visibility.Collapsed;
@@ -87,6 +81,7 @@ namespace Passwordless_Authenticator
             enterPassBrdr.Visibility = Visibility.Visible;
             submitPassBrdr.Visibility = Visibility.Visible;
             changePassBrdr.Visibility = Visibility.Collapsed;
+            TextB1Brdr.Visibility = Visibility.Visible;
             TextB1.Text = "Enter your password to set a new one";
             useHelloBrdr.Visibility = Visibility.Collapsed;
         }
@@ -104,7 +99,7 @@ namespace Passwordless_Authenticator
             }
             else
             {
-                TextB1.Text = "Incorrect Password, try again";
+                TextB1.Text = "Incorrect password, try again";
                 forgotPassBrdr.Visibility = Visibility.Visible;
             }
         }
@@ -123,7 +118,7 @@ namespace Passwordless_Authenticator
                 string recoveryKeyHash = CryptoUtils.hashData(recoveryKey);
                 PasswordDB.AddPassword(userPassHash, recoveryKeyHash);
                 UserPrefDB.SetPref("Custom");
-                string op_message = "Custom password set up as authentication. Your recovery key is:" + recoveryKey;
+                string op_message = "Custom password set up as authentication. Your recovery key is: \n" + recoveryKey + "\nKeep this Key handy as you will need it in case you forget your password!";
                 this.Frame.Navigate(typeof(AuthSetup), op_message);
             }
         }
@@ -173,6 +168,7 @@ namespace Passwordless_Authenticator
             enterNewPassBrdr.Visibility = Visibility.Collapsed;
             submitNewPassBrdr.Visibility = Visibility.Collapsed;
             reloadHomeBrdr.Visibility = Visibility.Collapsed;
+            TextB1Brdr.Visibility = Visibility.Collapsed;
 
 
             TextB1.Text = "HOME PAGE.";
@@ -185,7 +181,7 @@ namespace Passwordless_Authenticator
             {
                 UserPrefDB.SetPref("WindowsHello");
                 string op_message = "Windows Hello set up as authentication";
-                this.Frame.Navigate(typeof(AuthSetup), op_message);
+                this.Frame.Navigate(typeof(HomePage));
 
             }
             else

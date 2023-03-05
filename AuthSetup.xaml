@@ -87,7 +87,7 @@
             </StackPanel>
             <!-- END: MESSAGE BOX-->
             <Border Height="200" Width="600" CornerRadius="10" Grid.Row="2" BorderThickness="1" Background="#44247E">
-                <TextBlock x:Name="TextB1" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="22" Margin="20,0,20,0">Windows authentication successfully set up</TextBlock>
+                <TextBlock x:Name="TextB1" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="22" FontWeight="SemiBold" Margin="20,0,20,0" IsTextSelectionEnabled="True">Windows authentication successfully set up</TextBlock>
             </Border>
 
             <!--END: MESSAGE BOX -->

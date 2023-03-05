@@ -59,11 +59,9 @@ namespace Passwordless_Authenticator
                 setting = UserPrefDB.GetPref();
                 if (setting == "Empty")
                 {
-                    m_window = new Window();
-                    Frame rootFrame = new Frame();
-                    this.m_window.Content = rootFrame;
-                    this.m_window.Activate();
-                    rootFrame.Navigate(typeof(LandingPage));
+                    m_window = new MainWindow();
+                    m_window.Activate();
+
                 }
                 else
                 {
@@ -71,11 +69,8 @@ namespace Passwordless_Authenticator
                     WindowsAuthData auth_res = await AppAuthenticationService.authenticateUser(authmessage);
                     if (auth_res.flag == true)
                     {
-                        m_window = new Window();
-                        Frame rootFrame = new Frame();
-                        this.m_window.Content = rootFrame;
-                        this.m_window.Activate();
-                        rootFrame.Navigate(typeof(HomePage));
+                        m_window = new MainWindow();
+                        m_window.Activate();
                     }
                 }
             }
