@@ -2,6 +2,7 @@
 using Passwordless_Authenticator.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -74,6 +75,29 @@ namespace Passwordless_Authenticator.Services.Keys
         {
             var rsa = RSAKeyContainer.deleteContainer(containerName);
             rsa.Clear();
+        }
+
+        public static void exportKey()
+        {
+            DeleteKeyFromContainer("test_container");
+            DeleteKeyFromContainer("target_container");
+
+            string pubkey = GenerateKeyInContainer("test_container");
+            Debug.WriteLine("Public key:" + pubkey);
+            string prikey = GetPrivateKeyFromContainer("test_container");
+            Debug.WriteLine("Private key:" + prikey);
+
+            var rsa = RSAKeyContainer.fetchContainer("test_container");
+            string exportkey = rsa.ToXmlString(true);
+            Debug.WriteLine("Exported key:" + exportkey);
+            var rsa2 = RSAKeyContainer.fetchContainer("target_container");
+            rsa2.FromXmlString(exportkey);
+
+            string pubkey2 = GenerateKeyInContainer("target_container");
+            Debug.WriteLine("Public key2:" + pubkey2);
+            string prikey2 = GetPrivateKeyFromContainer("target_container");
+            Debug.WriteLine("Private key2:" + prikey2);
+
         }
     }
 }

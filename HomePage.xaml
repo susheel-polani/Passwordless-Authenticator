@@ -97,6 +97,7 @@
                     >
                         <Button                                           
                         x:Name="exportK"
+                            Click="exportKeys"
                     >
                             <TextBlock Text="Export Keys" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0" FontSize="27" TextWrapping="Wrap" Foreground="White"/>
                         </Button>
