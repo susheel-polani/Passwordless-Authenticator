@@ -22,7 +22,7 @@ namespace Passwordless_Authenticator.Services.SignUp
             string containerName = domainName + userName;
             Debug.WriteLine("Container Name: " + containerName);
 
-            WindowsAuthData result = await AppAuthenticationService.authenticate();
+            WindowsAuthData result = await AppAuthenticationService.authenticate(null);
             var responsePayload = new ResponsePayload();
             var responseContext = context.Response;
             if (result.flag)

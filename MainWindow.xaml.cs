@@ -8,20 +8,23 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using Passwordless_Authenticator.Models;
+using Passwordless_Authenticator.Services.Auth;
 using Passwordless_Authenticator.Services.HTTPServer;
 using Passwordless_Authenticator.Services.SQLite;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using System.ComponentModel.Design;
 
 using Microsoft.Extensions.Configuration;
 using Passwordless_Authenticator.Constants;
 using Microsoft.Data.Sqlite;
-using System.Diagnostics;
 using Passwordless_Authenticator.Dao_controllers;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -37,25 +40,17 @@ namespace Passwordless_Authenticator
         public MainWindow()
         {
             this.InitializeComponent();
-            WebInterfaceServer.startServer();
-            DataAccess.setUpDatabase();
-
-        }
-
-            
-
-        private void myButton_Click(object sender, RoutedEventArgs e)
-        {
-            myButton.Content = "Clicked";
-
-            try {
-                UserAuthDataController.test();
-            } catch (Exception ex) { 
-            
-                Debug.WriteLine(ex);
+            string setting = UserPrefDB.GetPref();
+            if (setting == "Empty")
+            {
+                rootFrame.Navigate(typeof(LandingPage));
+            }
+            else
+            {
+                rootFrame.Navigate(typeof(HomePage));
             }
 
-           
         }
+
     }
 }

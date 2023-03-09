@@ -7,6 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Security.Credentials.UI;
+using Windows.Security.Credentials;
+using Microsoft.UI.Xaml.Controls;
+using System.Reflection.Emit;
+using System.Runtime.InteropServices;
+using Meziantou.Framework.Win32;
+using Passwordless_Authenticator.Services.SQLite;
+using System.Diagnostics;
 
 namespace Passwordless_Authenticator.Services.Auth
 {
@@ -39,19 +46,99 @@ namespace Passwordless_Authenticator.Services.Auth
         /// <returns>
         /// Class <c>WindowsAuthData</c>
         /// </returns>
-        public static async Task<WindowsAuthData> authenticate()
+        public static async Task<WindowsAuthData> authenticate(string args)
         {
+
             try
             {
-                var windowsAuthVerification = await UserConsentVerifier.RequestVerificationAsync(AppAuthConstants.APP_AUTH_PROMPT_MSG);
-
-                return AppAuthConstants.getVerificationData(windowsAuthVerification);
+                if (args is null)
+                {
+                    var windowsAuthVerification = await UserConsentVerifier.RequestVerificationAsync(AppAuthConstants.APP_AUTH_PROMPT_MSG);
+                    return AppAuthConstants.getVerificationData(windowsAuthVerification);
+                }
+                else
+                {
+                    var windowsAuthVerification = await UserConsentVerifier.RequestVerificationAsync(args);
+                    return AppAuthConstants.getVerificationData(windowsAuthVerification);
+                }
             }
             catch
             {
                 return new WindowsAuthData(false, AppConstants.GENERIC_ERROR);
             }
 
+        }
+
+        public static async Task<WindowsAuthData> authenticateUser(string inputText)
+        {
+            WindowsAuthData result = new WindowsAuthData(false, "Unauthenticated");
+            string setting = UserPrefDB.GetPref();
+            if (setting == "Custom")
+            {
+                string pass = PromptAuth(inputText);
+                if (pass is null)
+                {
+                    result.flag = false;
+                    result.message = "Password authentication cancelled";
+                }
+
+                else
+                {
+                    bool check = PasswordService.checkPassword(pass);
+                    if (check)
+                    {
+                        result.flag = true;
+                        result.message = "Authenticated via Custom Password";
+                    }
+                    else
+                    {
+                        result.flag = false;
+                        result.message = "Authentication via Custom Password Failed";
+                    }
+                }
+
+            }
+
+            else if (setting == "WindowsHello")
+            {
+                result = await AppAuthenticationService.authenticate(inputText);
+            }
+
+            return result;
+        }
+
+        public static string PromptAuth(string inputText)
+        {
+            string pass;
+            var creds = CredentialManager.PromptForCredentials(
+                    messageText: inputText,
+                    saveCredential: Meziantou.Framework.Win32.CredentialSaveOption.Selected,
+                    userName: "User");
+
+            pass = creds?.Password;
+
+            return pass;
+        }
+
+        public static async Task<bool> isAuthSetup()
+        {
+
+            bool keyCredentialAvailable = await KeyCredentialManager.IsSupportedAsync();
+            WindowsAuthData winhello = await isWindowsAuthAvailable();
+            if (winhello.message == "Windows Hello Authentication is available.")
+            {
+                return true;
+            }
+
+            else if (keyCredentialAvailable)
+            {
+                return true;
+            }
+
+            else
+            {
+                return false;
+            }
         }
     }
 }

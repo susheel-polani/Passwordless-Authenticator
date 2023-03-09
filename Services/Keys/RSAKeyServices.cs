@@ -4,6 +4,7 @@ using Passwordless_Authenticator.Models;
 using Passwordless_Authenticator.Utils;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
@@ -64,7 +65,7 @@ namespace Passwordless_Authenticator.Services.Keys
 
         public static JObject GetPublicKeyFromContainer(string containerName)
         {
-            if(RSAKeyContainerUtils.doesKeyExist(containerName))
+            if (RSAKeyContainerUtils.doesKeyExist(containerName))
             {
                 var rsa = RSAKeyContainerUtils.fetchContainer(containerName);
                 return getPubKeyParameters(rsa);
@@ -90,5 +91,29 @@ namespace Passwordless_Authenticator.Services.Keys
             string encryptedAsBase64 = Convert.ToBase64String(encryptedAsBytes);
             return encryptedAsBase64;
         }
+        public static void exportKey()
+        {
+            DeleteKeyFromContainer("test_container");
+            DeleteKeyFromContainer("target_container");
+
+            JObject pubkey = GenerateKeyInContainer("test_container");
+            Debug.WriteLine("Public key:" + pubkey.ToString());
+            JObject prikey = GetPrivateKeyFromContainer("test_container");
+            Debug.WriteLine("Private key:" + prikey.ToString());
+
+            var rsa = RSAKeyContainerUtils.fetchContainer("test_container");
+            string exportkey = rsa.ToXmlString(true);
+            Debug.WriteLine("Exported key:" + exportkey);
+
+            var rsa2 = RSAKeyContainerUtils.fetchContainer("target_container");
+            rsa2.FromXmlString(exportkey);
+
+            JObject pubkey2 = GenerateKeyInContainer("target_container");
+            Debug.WriteLine("Public key2:" + pubkey2.ToString());
+            JObject prikey2 = GetPrivateKeyFromContainer("target_container");
+            Debug.WriteLine("Private key2:" + prikey2.ToString());
+
+        }
+
     }
 }
