@@ -16,6 +16,7 @@ using System.Web;
 using Windows.Security.Credentials.UI;
 
 using Passwordless_Authenticator.Utils;
+using Windows.Storage.Streams;
 
 namespace Passwordless_Authenticator.Services.HTTPServer
 {
@@ -43,10 +44,8 @@ namespace Passwordless_Authenticator.Services.HTTPServer
                 while (true)
                 {
                     HttpListenerContext context = listener.GetContext();
-                    HttpListenerRequest request = context.Request;
-
-                    WebInterfaceServerUtils.invokeEndpoint(context);                    
-
+                    WebInterfaceServerUtils.enableCORS(context);
+                    WebInterfaceServerUtils.invokeEndpoint(context);                   
                 }
             });
         }

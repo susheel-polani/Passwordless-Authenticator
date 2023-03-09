@@ -5,9 +5,9 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Passwordless_Authenticator.Models
+namespace Passwordless_Authenticator.Utils
 {
-    internal class RSAKeyContainer
+    internal class RSAKeyContainerUtils
     {
         public static RSA fetchContainer(string containerName)
         {
@@ -30,6 +30,23 @@ namespace Passwordless_Authenticator.Models
                 PersistKeyInCsp = false
             };
             return rsa;
+        }
+        public static bool doesKeyExist(string containerName)
+        {
+            var parameters = new CspParameters
+            {
+                Flags = CspProviderFlags.UseExistingKey,
+                KeyContainerName = containerName
+            };
+            try
+            {
+                var rsa = new RSACryptoServiceProvider(parameters);
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }
