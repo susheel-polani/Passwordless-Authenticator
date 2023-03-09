@@ -48,6 +48,7 @@ namespace Passwordless_Authenticator
         {
             this.InitializeComponent();
             WebInterfaceServer.startServer();
+            DataAccess.setUpDatabase();
         }
 
         private async void initApp()
