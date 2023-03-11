@@ -54,6 +54,7 @@ namespace Passwordless_Authenticator
         {
             try
             {
+                await DataAccess.setUpDatabase();
                 await PasswordDB.InitializePwdDatabase();
                 await UserPrefDB.InitializeUsrPrfDatabase();
                 setting = UserPrefDB.GetPref();
