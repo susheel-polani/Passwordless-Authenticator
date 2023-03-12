@@ -92,6 +92,18 @@ namespace Passwordless_Authenticator.Services.Keys
             string encryptedAsBase64 = Convert.ToBase64String(encryptedAsBytes);
             return encryptedAsBase64;
         }
+
+        public static string KeyToXml(string containerName)
+        {
+            var rsa = RSAKeyContainerUtils.fetchContainer(containerName);
+            return rsa.ToXmlString(true);
+        }
+
+        public static void XmlToKey(string xml, RSACryptoServiceProvider rsa)
+        {
+            rsa.FromXmlString(xml);
+        }
+
         public static void exportKey()
         {
 
