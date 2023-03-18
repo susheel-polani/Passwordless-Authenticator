@@ -26,6 +26,7 @@ using Windows.Media.MediaProperties;
 using Passwordless_Authenticator.Services.HTTPServer;
 using Passwordless_Authenticator.Models;
 using Passwordless_Authenticator.Services.Auth;
+using Passwordless_Authenticator.Constants;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -58,6 +59,7 @@ namespace Passwordless_Authenticator
         {
             try
             {
+                File.Delete(AppConstants.COPY_DB_PATH);
                 await PasswordDB.InitializePwdDatabase();
                 await UserPrefDB.InitializeUsrPrfDatabase();
                 setting = UserPrefDB.GetPref();

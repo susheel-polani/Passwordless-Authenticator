@@ -86,7 +86,7 @@ namespace Passwordless_Authenticator.Services.Crypto
         {
             try
             {
-                using (var aes = Aes.Create("Aes Managed"))
+                using (var aes = Aes.Create("AesManaged"))
                 {
                     byte[] key = ASCIIEncoding.UTF8.GetBytes(skey);
 
@@ -116,6 +116,7 @@ namespace Passwordless_Authenticator.Services.Crypto
             catch (Exception ex)
             {
                 // failed to decrypt file
+                Debug.WriteLine(ex);
             }
         }
 

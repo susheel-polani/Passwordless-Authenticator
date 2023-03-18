@@ -15,6 +15,8 @@ using Passwordless_Authenticator.Services.SQLite;
 using Newtonsoft.Json.Linq;
 using Microsoft.Data.Sqlite;
 using Windows.System;
+using Passwordless_Authenticator.Constants;
+using System.Runtime.CompilerServices;
 
 namespace Passwordless_Authenticator.Utils
 {
@@ -70,21 +72,61 @@ namespace Passwordless_Authenticator.Utils
             }
         }
 
+        public static void importDB()
+        {
+            List<JObject> userdom_result = DataAccess.executeQuery(AppConstants.DB_PATH, DBQueries.GET_USER_DOM, null);
 
-    public static void populateDB()
+            var existing_entries = new List<string>();
+
+            foreach(JObject obj in userdom_result)
+            {
+                string username = (string)obj["username"];
+                string domain_name = (string)obj["domain_name"];
+                existing_entries.Add(username + domain_name);
+            }
+
+            List<JObject> import_result = DataAccess.executeQuery(AppConstants.IMP_DB_PATH, DBQueries.GET_IMPORT_DATA, null);
+            
+            foreach(JObject obj in import_result)
+            {
+                string username = (string)obj["username"];
+                string domain_name = (string)obj["domain_name"];
+                string container_name = (string)obj["key_container_id"];
+                string xml_string = (string)obj["keyxml"];
+
+                string identifier = username + domain_name;
+
+                if (existing_entries.Contains(identifier))
+                {
+                    Debug.Write("Entry already exists");
+                }
+
+            }
+
+
+        }
+
+
+        public static void populateDB()
         {
             // populates the db with dummy values. Need to set up a query to delete users
-
             RSAKeyServices.DeleteKeyFromContainer("container1");
-            RSAKeyServices.DeleteKeyFromContainer("container2");
-            RSAKeyServices.DeleteKeyFromContainer("container3");
+            RSAKeyServices.DeleteKeyFromContainer("container4");
+            RSAKeyServices.DeleteKeyFromContainer("container5");
+            RSAKeyServices.DeleteKeyFromContainer("container6");
+            RSAKeyServices.DeleteKeyFromContainer("container7");
 
-            var rsa = RSAKeyContainerUtils.fetchContainer("container1");
+            var rsa = RSAKeyContainerUtils.fetchContainer("container4");
+            UserAuthDataController.insertUserData("facebook", "user4", "container4");
+            rsa = RSAKeyContainerUtils.fetchContainer("container5");
+            UserAuthDataController.insertUserData("google", "user5", "container5");
+            rsa = RSAKeyContainerUtils.fetchContainer("container6");
+            UserAuthDataController.insertUserData("amazon", "user6", "container6");
+            rsa = RSAKeyContainerUtils.fetchContainer("container7");
+            UserAuthDataController.insertUserData("amazon", "user7", "container7");
+            rsa = RSAKeyContainerUtils.fetchContainer("container1");
             UserAuthDataController.insertUserData("facebook", "user1", "container1");
-            rsa = RSAKeyContainerUtils.fetchContainer("container2");
-            UserAuthDataController.insertUserData("google", "user2", "container2");
-            rsa = RSAKeyContainerUtils.fetchContainer("container3");
-            UserAuthDataController.insertUserData("linkedin", "user3", "container3");
+
 
         }
     }

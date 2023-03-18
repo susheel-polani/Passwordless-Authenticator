@@ -4,6 +4,7 @@ using Passwordless_Authenticator.Services.Crypto;
 using Passwordless_Authenticator.Utils;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -41,12 +42,20 @@ namespace Passwordless_Authenticator.Services.Keys
 
             StorageFolder folder = await folderPicker.PickSingleFolderAsync();
 
+            if (folder != null)
+            {
             Windows.Storage.AccessCache.StorageApplicationPermissions.FutureAccessList.AddOrReplace("PickedFolderToken", folder);
 
             string enc_path = Path.Combine(folder.Path, "encrypted.db");
             File.Copy(AppConstants.COPY_DB_PATH, AppConstants.ENC_DB_PATH);
             FileEncryptionService.EncryptFile(AppConstants.ENC_DB_PATH, enc_path, "passwordkeyvault");
             File.Delete(AppConstants.ENC_DB_PATH);
+            }
+
+            else
+            {
+                Debug.WriteLine("No file selected");
+            }
         }
 
         public static async void importKeys()
@@ -58,6 +67,11 @@ namespace Passwordless_Authenticator.Services.Keys
 
             filePicker.FileTypeFilter.Add(".db");
             var file = await filePicker.PickSingleFileAsync();
+
+            FileEncryptionService.DecryptFile(file.Path, AppConstants.IMP_DB_PATH, "passwordkeyvault");
+
+            DbUtils.importDB();
+
 
         }
     }

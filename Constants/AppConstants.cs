@@ -16,9 +16,12 @@ namespace Passwordless_Authenticator.Constants
         public const string DB_NAME = "asym-auth.db";
         public const string COPY_DB_NAME = "copy_asym-auth.db";
         public const string ENC_DB_NAME = "enc_asym-auth.db";
+        public const string IMP_DB_NAME = "imp_asym-auth.db";
 
+        public static string DB_PATH = Path.Combine(ApplicationData.Current.LocalFolder.Path, AppConstants.DB_NAME);
         public static string COPY_DB_PATH = Path.Combine(ApplicationData.Current.LocalFolder.Path, AppConstants.COPY_DB_NAME);
         public static string ENC_DB_PATH = Path.Combine(ApplicationData.Current.LocalFolder.Path, AppConstants.ENC_DB_NAME);
+        public static string IMP_DB_PATH = Path.Combine(ApplicationData.Current.LocalFolder.Path, AppConstants.IMP_DB_NAME);
 
     }
 }

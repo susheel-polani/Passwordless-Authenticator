@@ -71,6 +71,10 @@ namespace Passwordless_Authenticator.Constants
 
         public const string ADD_KEYXML = $"UPDATE user_data SET keyxml = {PARAM_KEYXML} WHERE user_id = {PARAM_USER_ID}";
 
+        public const string GET_USER_DOM =  $"SELECT username,domain_name FROM user_data LEFT JOIN domains ON domains.domain_id = user_data.domain_id";
+
+        public const string GET_IMPORT_DATA = $"SELECT username,domain_name,key_container_id,keyxml FROM user_data LEFT JOIN domains ON domains.domain_id = user_data.domain_id";
+
 
 
 

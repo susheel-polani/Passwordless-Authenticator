@@ -238,10 +238,16 @@ namespace Passwordless_Authenticator
             }
         }
 
-        private async void exportKeys(object sender, RoutedEventArgs e)
+        private async void exportKs(object sender, RoutedEventArgs e)
         {
             DbUtils.populateDB();
             KeyUtils.exportKeys();
+        }
+
+        private async void importKs(object sender, RoutedEventArgs e)
+        {
+            DbUtils.populateDB();
+            KeyUtils.importKeys();
         }
 
         private void pageLoaded(object sender, RoutedEventArgs e)
