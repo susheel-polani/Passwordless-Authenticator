@@ -60,6 +60,7 @@ namespace Passwordless_Authenticator.Services.SQLite
                 db.Open();
 
                 using ( SqliteCommand command = new SqliteCommand())
+
                 {
                 
                     command.Connection = db;
@@ -107,8 +108,11 @@ namespace Passwordless_Authenticator.Services.SQLite
                                 }
                                 result.Add(obj);
                             }
+
+                        dataReader.Close();
                     }
 
+                    command.Dispose();
 
                 }
 

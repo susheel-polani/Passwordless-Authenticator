@@ -35,6 +35,8 @@ namespace Passwordless_Authenticator
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.
     /// </summary>
+    /// 
+
     public partial class App : Application
     {
         /// <summary>
@@ -42,6 +44,7 @@ namespace Passwordless_Authenticator
         /// executed, and as such is the logical equivalent of main() or WinMain().
         /// </summary>
         /// 
+
 
         string setting;
         public App()
@@ -92,6 +95,6 @@ namespace Passwordless_Authenticator
             initApp();
         }
 
-        private Window m_window;
+        public static Window m_window;
     }
 }
