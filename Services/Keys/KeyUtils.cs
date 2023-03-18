@@ -48,5 +48,17 @@ namespace Passwordless_Authenticator.Services.Keys
             FileEncryptionService.EncryptFile(AppConstants.ENC_DB_PATH, enc_path, "passwordkeyvault");
             File.Delete(AppConstants.ENC_DB_PATH);
         }
+
+        public static async void importKeys()
+        {
+            var filePicker = new FileOpenPicker();
+
+            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.m_window);
+            WinRT.Interop.InitializeWithWindow.Initialize(filePicker, hwnd);
+
+            filePicker.FileTypeFilter.Add(".db");
+            var file = await filePicker.PickSingleFileAsync();
+
+        }
     }
 }
