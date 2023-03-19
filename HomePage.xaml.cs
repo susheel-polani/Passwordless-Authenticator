@@ -13,7 +13,7 @@ using Passwordless_Authenticator.Constants;
 using Passwordless_Authenticator.Models;
 using Passwordless_Authenticator.Services.Auth;
 using Passwordless_Authenticator.Services.Crypto;
-using Passwordless_Authenticator.Services.Keys;
+using Passwordless_Authenticator.Services.HTTPServer;
 using Passwordless_Authenticator.Services.SQLite;
 using Passwordless_Authenticator.Utils;
 using System;
@@ -22,6 +22,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
@@ -241,12 +242,16 @@ namespace Passwordless_Authenticator
         private async void exportKs(object sender, RoutedEventArgs e)
         {
             DbUtils.populateDB();
-            KeyUtils.exportKeys();
+            string encryptPass = CryptoUtils.getUniqueKey(16);
+            string encryptIV = CryptoUtils.getUniqueKey(16);
+            KeyUtils.exportKeys(encryptPass, encryptIV);
+
+            TextB1Brdr.Visibility = Visibility.Visible;
+            TextB1.Text = "Database encrypted. Your key is : " + encryptPass + " and your IV is : " + encryptIV + ". Use these to decrypt the DB.";
         }
 
         private async void importKs(object sender, RoutedEventArgs e)
         {
-            DbUtils.populateDB();
             KeyUtils.importKeys();
         }
 
@@ -261,7 +266,7 @@ namespace Passwordless_Authenticator
             {
                 currentMethod.Text = " Windows Hello";
             }
-        
         }
+
     }
 }

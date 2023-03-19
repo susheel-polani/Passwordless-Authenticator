@@ -51,8 +51,6 @@ namespace Passwordless_Authenticator
         public App()
         {
             this.InitializeComponent();
-            WebInterfaceServer.startServer();
-            DataAccess.setUpDatabase();
         }
 
         private async void initApp()
@@ -63,7 +61,7 @@ namespace Passwordless_Authenticator
                 await PasswordDB.InitializePwdDatabase();
                 await UserPrefDB.InitializeUsrPrfDatabase();
                 setting = UserPrefDB.GetPref();
-                if (setting == "Empty")
+                /* if (setting == "Empty")
                 {
                     m_window = new MainWindow();
                     m_window.Activate();
@@ -79,6 +77,10 @@ namespace Passwordless_Authenticator
                         m_window.Activate();
                     }
                 }
+                */
+                m_window = new MainWindow();
+                m_window.Activate();
+
             }
             catch
             {

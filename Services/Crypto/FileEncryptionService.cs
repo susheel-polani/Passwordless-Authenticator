@@ -13,6 +13,8 @@ namespace Passwordless_Authenticator.Services.Crypto
     internal class FileEncryptionService
     {
         // use this for encrypting/decrypting keys, remove any other functions
+
+        /* 
         public async static void ExportKeys()
         {
             string dbpath = Path.Combine(ApplicationData.Current.LocalFolder.Path, "asym-auth.db");
@@ -39,13 +41,15 @@ namespace Passwordless_Authenticator.Services.Crypto
             File.Delete(copy_dbpath);
         }
 
+        */
+
         public static void ImportKeys()
         {
             string dec_dbpath = Path.Combine(ApplicationData.Current.LocalFolder.Path, "passwordless-KeyPairs.db");
 
         }
 
-        public static void EncryptFile(string inputFile, string outputFile, string skey)
+        public static void EncryptFile(string inputFile, string outputFile, string skey, string iv)
         {
             try
             {
@@ -55,7 +59,7 @@ namespace Passwordless_Authenticator.Services.Crypto
 
                     /* This is for demostrating purposes only. 
                      * Ideally you will want the IV key to be different from your key and you should always generate a new one for each encryption in other to achieve maximum security*/
-                    byte[] IV = ASCIIEncoding.UTF8.GetBytes(skey);
+                    byte[] IV = ASCIIEncoding.UTF8.GetBytes(iv);
 
                     using (FileStream fsCrypt = new FileStream(outputFile, FileMode.Create))
                     {
@@ -82,7 +86,7 @@ namespace Passwordless_Authenticator.Services.Crypto
             }
         }
 
-        public static void DecryptFile(string inputFile, string outputFile, string skey)
+        public static void DecryptFile(string inputFile, string outputFile, string skey, string iv)
         {
             try
             {
@@ -92,7 +96,7 @@ namespace Passwordless_Authenticator.Services.Crypto
 
                     /* This is for demostrating purposes only. 
                      * Ideally you will want the IV key to be different from your key and you should always generate a new one for each encryption in other to achieve maximum security*/
-                    byte[] IV = ASCIIEncoding.UTF8.GetBytes(skey);
+                    byte[] IV = ASCIIEncoding.UTF8.GetBytes(iv);
 
                     using (FileStream fsCrypt = new FileStream(inputFile, FileMode.Open))
                     {

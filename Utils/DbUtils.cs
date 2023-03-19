@@ -17,6 +17,8 @@ using Microsoft.Data.Sqlite;
 using Windows.System;
 using Passwordless_Authenticator.Constants;
 using System.Runtime.CompilerServices;
+using Microsoft.UI.Xaml.Controls;
+using Windows.Security.Authentication.OnlineId;
 
 namespace Passwordless_Authenticator.Utils
 {
@@ -72,7 +74,7 @@ namespace Passwordless_Authenticator.Utils
             }
         }
 
-        public static void importDB()
+        public static async void importDB()
         {
             List<JObject> userdom_result = DataAccess.executeQuery(AppConstants.DB_PATH, DBQueries.GET_USER_DOM, null);
 
@@ -86,8 +88,12 @@ namespace Passwordless_Authenticator.Utils
             }
 
             List<JObject> import_result = DataAccess.executeQuery(AppConstants.IMP_DB_PATH, DBQueries.GET_IMPORT_DATA, null);
-            
-            foreach(JObject obj in import_result)
+
+
+            var rsa1 = RSAKeyContainerUtils.fetchContainer("container1");
+            Debug.WriteLine("Before overwriting: " + rsa1.ToXmlString(true));
+
+            foreach (JObject obj in import_result)
             {
                 string username = (string)obj["username"];
                 string domain_name = (string)obj["domain_name"];
@@ -99,11 +105,63 @@ namespace Passwordless_Authenticator.Utils
                 if (existing_entries.Contains(identifier))
                 {
                     Debug.Write("Entry already exists");
+                    bool result = await PromptUserdataOverwrite(username, domain_name);
+                    Debug.WriteLine(" Result is : " + result);
+                    if (result)
+                    {
+                        var rsa = RSAKeyContainerUtils.fetchContainer(container_name);
+                        rsa.FromXmlString(xml_string);
+
+                    }
+                    else
+                    {
+
+                    }
+                }
+
+                else
+                {
+                    var rsa = RSAKeyContainerUtils.fetchContainer(container_name);
+                    rsa.FromXmlString(xml_string);
+                    UserAuthDataController.insertUserData(domain_name, username, container_name);
+
                 }
 
             }
 
 
+
+            rsa1 = RSAKeyContainerUtils.fetchContainer("container1");
+            Debug.WriteLine("After overwriting: " + rsa1.ToXmlString(true));
+
+
+        }
+
+        public static async Task<bool> PromptUserdataOverwrite(string username, string domain_name)
+        {
+            ContentDialog overwriteUsernameDialog = new ContentDialog
+            {
+                Title = "User already exists.",
+                Content = "This system already has the username: " + username + "for the domain: " + domain_name + ". Do you want to overwrite it with the new data?",
+                PrimaryButtonText = "Overwrite",
+                CloseButtonText = "Do not overwrite"
+            };
+
+            overwriteUsernameDialog.XamlRoot = App.m_window.Content.XamlRoot;
+
+            ContentDialogResult result = await overwriteUsernameDialog.ShowAsync();
+
+            // Delete the file if the user clicked the primary button.
+            /// Otherwise, do nothing.
+            if (result == ContentDialogResult.Primary)
+            {
+                // Delete the file.
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
 
