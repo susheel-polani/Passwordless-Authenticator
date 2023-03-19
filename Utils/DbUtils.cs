@@ -74,65 +74,76 @@ namespace Passwordless_Authenticator.Utils
             }
         }
 
-        public static async void importDB()
+        public static async Task<string> importDB()
         {
-            List<JObject> userdom_result = DataAccess.executeQuery(AppConstants.DB_PATH, DBQueries.GET_USER_DOM, null);
-
-            var existing_entries = new List<string>();
-
-            foreach(JObject obj in userdom_result)
+            try
             {
-                string username = (string)obj["username"];
-                string domain_name = (string)obj["domain_name"];
-                existing_entries.Add(username + domain_name);
-            }
+                List<JObject> userdom_result = DataAccess.executeQuery(AppConstants.DB_PATH, DBQueries.GET_USER_DOM, null);
 
-            List<JObject> import_result = DataAccess.executeQuery(AppConstants.IMP_DB_PATH, DBQueries.GET_IMPORT_DATA, null);
+                var existing_entries = new List<string>();
 
-
-            var rsa1 = RSAKeyContainerUtils.fetchContainer("container1");
-            Debug.WriteLine("Before overwriting: " + rsa1.ToXmlString(true));
-
-            foreach (JObject obj in import_result)
-            {
-                string username = (string)obj["username"];
-                string domain_name = (string)obj["domain_name"];
-                string container_name = (string)obj["key_container_id"];
-                string xml_string = (string)obj["keyxml"];
-
-                string identifier = username + domain_name;
-
-                if (existing_entries.Contains(identifier))
+                foreach (JObject obj in userdom_result)
                 {
-                    Debug.Write("Entry already exists");
-                    bool result = await PromptUserdataOverwrite(username, domain_name);
-                    Debug.WriteLine(" Result is : " + result);
-                    if (result)
+                    string username = (string)obj["username"];
+                    string domain_name = (string)obj["domain_name"];
+                    existing_entries.Add(username + domain_name);
+                }
+
+                List<JObject> import_result = DataAccess.executeQuery(AppConstants.IMP_DB_PATH, DBQueries.GET_IMPORT_DATA, null);
+
+
+                var rsa1 = RSAKeyContainerUtils.fetchContainer("container1");
+                Debug.WriteLine("Before overwriting: " + rsa1.ToXmlString(true));
+
+                foreach (JObject obj in import_result)
+                {
+                    string username = (string)obj["username"];
+                    string domain_name = (string)obj["domain_name"];
+                    string container_name = (string)obj["key_container_id"];
+                    string xml_string = (string)obj["keyxml"];
+
+                    string identifier = username + domain_name;
+
+                    if (existing_entries.Contains(identifier))
+                    {
+                        Debug.Write("Entry already exists");
+                        bool result = await PromptUserdataOverwrite(username, domain_name);
+                        Debug.WriteLine(" Result is : " + result);
+                        if (result)
+                        {
+                            var rsa = RSAKeyContainerUtils.fetchContainer(container_name);
+                            rsa.FromXmlString(xml_string);
+
+                        }
+                        else
+                        {
+
+                        }
+                    }
+
+                    else
                     {
                         var rsa = RSAKeyContainerUtils.fetchContainer(container_name);
                         rsa.FromXmlString(xml_string);
+                        UserAuthDataController.insertUserData(domain_name, username, container_name);
 
                     }
-                    else
-                    {
-
-                    }
-                }
-
-                else
-                {
-                    var rsa = RSAKeyContainerUtils.fetchContainer(container_name);
-                    rsa.FromXmlString(xml_string);
-                    UserAuthDataController.insertUserData(domain_name, username, container_name);
 
                 }
 
+
+
+                rsa1 = RSAKeyContainerUtils.fetchContainer("container1");
+                Debug.WriteLine("After overwriting: " + rsa1.ToXmlString(true));
+
+                return "Database imported successfully.";
             }
 
-
-
-            rsa1 = RSAKeyContainerUtils.fetchContainer("container1");
-            Debug.WriteLine("After overwriting: " + rsa1.ToXmlString(true));
+            catch (Exception ex)
+            {
+                Debug.Write(ex);
+                return "Database import failed." ;
+            }
 
 
         }

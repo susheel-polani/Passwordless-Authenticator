@@ -241,18 +241,41 @@ namespace Passwordless_Authenticator
 
         private async void exportKs(object sender, RoutedEventArgs e)
         {
-            DbUtils.populateDB();
-            string encryptPass = CryptoUtils.getUniqueKey(16);
-            string encryptIV = CryptoUtils.getUniqueKey(16);
-            KeyUtils.exportKeys(encryptPass, encryptIV);
+            // DbUtils.populateDB(); /* remove this function after integrating with sign up */
+            // string encryptPass = CryptoUtils.getUniqueKey(16);
+            // string encryptIV = CryptoUtils.getUniqueKey(16);
+            StorageFolder folder = await AppUtils.folderPicker();
 
-            TextB1Brdr.Visibility = Visibility.Visible;
-            TextB1.Text = "Database encrypted. Your key is : " + encryptPass + " and your IV is : " + encryptIV + ". Use these to decrypt the DB.";
+            // var result = await KeyUtils.exportKeys(folder.Path);
+
+            if (folder != null)
+            {
+
+                List<string> export_info = new List<string> { "export", folder.Path};
+
+                this.Frame.Navigate(typeof(KeyMgmt), export_info);
+            }
+
+            else
+            {
+
+            }
         }
 
         private async void importKs(object sender, RoutedEventArgs e)
         {
-            KeyUtils.importKeys();
+            StorageFile file = await AppUtils.filePicker();
+            if (file != null)
+            {
+                List<string> export_info = new List<string> { "import", file.Path };
+
+                this.Frame.Navigate(typeof(KeyMgmt), export_info);
+                // KeyUtils.importKeys();
+            }
+            else
+            {
+
+            }
         }
 
         private void pageLoaded(object sender, RoutedEventArgs e)

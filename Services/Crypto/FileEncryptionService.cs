@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Passwordless_Authenticator.Constants;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -49,8 +50,9 @@ namespace Passwordless_Authenticator.Services.Crypto
 
         }
 
-        public static void EncryptFile(string inputFile, string outputFile, string skey, string iv)
+        public static string EncryptFile(string outputFile, string skey, string iv)
         {
+            string inputFile = AppConstants.ENC_DB_PATH;
             try
             {
                 using (var aes = Aes.Create("AesManaged"))
@@ -79,15 +81,19 @@ namespace Passwordless_Authenticator.Services.Crypto
                         }
                     }
                 }
+
+                return "File encrypted successfully.";
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
+                return "Encryption Failed";
             }
         }
 
-        public static void DecryptFile(string inputFile, string outputFile, string skey, string iv)
+        public static string DecryptFile(string inputFile, string skey, string iv)
         {
+            string outputFile = AppConstants.IMP_DB_PATH;
             try
             {
                 using (var aes = Aes.Create("AesManaged"))
@@ -116,11 +122,15 @@ namespace Passwordless_Authenticator.Services.Crypto
                         }
                     }
                 }
+
+                return "File decrypted Successfully. \n";
             }
             catch (Exception ex)
             {
                 // failed to decrypt file
                 Debug.WriteLine(ex);
+                return "Decryption failed.";
+                //Debug.WriteLine(ex);
             }
         }
 

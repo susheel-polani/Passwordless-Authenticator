@@ -26,8 +26,10 @@ namespace Passwordless_Authenticator.Utils
     internal class KeyUtils
     {
         // add export and import key functionality here
-        public static async void exportKeys(string pass, string iv)
+        public static async Task<string> exportKeys(string folderPath, string pass, string iv)
         {
+
+            /*
             var folderPicker = new FolderPicker();
 
             var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.m_window);
@@ -37,29 +39,34 @@ namespace Passwordless_Authenticator.Utils
             folderPicker.FileTypeFilter.Add("*");
 
             StorageFolder folder = await folderPicker.PickSingleFolderAsync();
+            */
 
-            if (folder != null)
+            if (folderPath != null)
             {
+                    DbUtils.copyDB();
+                    DbUtils.appendXML(AppConstants.COPY_DB_PATH);
 
-                DbUtils.copyDB();
-                DbUtils.appendXML(AppConstants.COPY_DB_PATH);
+                    // Windows.Storage.AccessCache.StorageApplicationPermissions.FutureAccessList.AddOrReplace("PickedFolderToken", folderPath);
 
-                Windows.Storage.AccessCache.StorageApplicationPermissions.FutureAccessList.AddOrReplace("PickedFolderToken", folder);
+                    string enc_path = Path.Combine(folderPath, "encrypted.db");
+                    File.Copy(AppConstants.COPY_DB_PATH, AppConstants.ENC_DB_PATH);
+                    string encres = FileEncryptionService.EncryptFile(enc_path, pass, iv);
+                    File.Delete(AppConstants.ENC_DB_PATH);
+                    return encres;
 
-                string enc_path = Path.Combine(folder.Path, "encrypted.db");
-                File.Copy(AppConstants.COPY_DB_PATH, AppConstants.ENC_DB_PATH);
-                FileEncryptionService.EncryptFile(AppConstants.ENC_DB_PATH, enc_path, pass, iv);
-                File.Delete(AppConstants.ENC_DB_PATH);
             }
 
             else
             {
                 Debug.WriteLine("No file selected");
+                return null;
+
             }
         }
 
-        public static async void importKeys()
+        public static async Task<string> importKeys(string filePath, string pass, string iv)
         {
+            /*
             var filePicker = new FileOpenPicker();
 
             var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.m_window);
@@ -67,18 +74,27 @@ namespace Passwordless_Authenticator.Utils
 
             filePicker.FileTypeFilter.Add(".db");
             var file = await filePicker.PickSingleFileAsync();
+            */
 
-            if (file != null)
+            if (filePath != null)
             {
-                FileEncryptionService.DecryptFile(file.Path, AppConstants.IMP_DB_PATH, "test", "test");
-
-                DbUtils.importDB();
+                string decres = FileEncryptionService.DecryptFile(filePath, pass, iv);
+                if (decres == "File decrypted Successfully.")
+                {
+                    string impres = await DbUtils.importDB();
+                    return decres + impres;
+                }
+                else
+                {
+                    return decres;
+                }
 
             }
             
             else
             {
                 Debug.WriteLine("No file selected");
+                return null;
             }
 
 
