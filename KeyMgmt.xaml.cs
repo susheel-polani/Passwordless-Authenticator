@@ -41,7 +41,7 @@ namespace Passwordless_Authenticator
             string sIV = CryptoUtils.getUniqueKey(16);
             string encres = await KeyUtils.exportKeys(folderPath, skey, sIV);
 
-            if (encres == "File encrypted successfully")
+            if (encres == "File encrypted successfully.")
             {
                 TextB1Brdr.Visibility = Visibility.Visible;
                 TextB1.Text = "Database encrypted. \nKey: " + skey + " \nIV: " + sIV + "\nUse these to decrypt the DB.";
