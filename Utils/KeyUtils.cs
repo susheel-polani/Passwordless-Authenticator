@@ -79,7 +79,7 @@ namespace Passwordless_Authenticator.Utils
             if (filePath != null)
             {
                 string decres = FileEncryptionService.DecryptFile(filePath, pass, iv);
-                if (decres == "File decrypted Successfully.")
+                if (decres == "File decrypted Successfully.\n")
                 {
                     string impres = await DbUtils.importDB();
                     return decres + impres;

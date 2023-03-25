@@ -123,7 +123,7 @@ namespace Passwordless_Authenticator.Services.Crypto
                     }
                 }
 
-                return "File decrypted Successfully. \n";
+                return "File decrypted Successfully.\n";
             }
             catch (Exception ex)
             {

@@ -136,6 +136,8 @@ namespace Passwordless_Authenticator.Utils
                 rsa1 = RSAKeyContainerUtils.fetchContainer("container1");
                 Debug.WriteLine("After overwriting: " + rsa1.ToXmlString(true));
 
+                //File.Delete(AppConstants.IMP_DB_PATH);
+
                 return "Database imported successfully.";
             }
 
