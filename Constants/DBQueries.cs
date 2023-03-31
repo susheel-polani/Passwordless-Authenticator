@@ -60,6 +60,8 @@ namespace Passwordless_Authenticator.Constants
         public const string GET_USERNAMES = @$"SELECT username FROM user_data 
                                                 WHERE domain_id = (SELECT domain_id FROM domains WHERE domain_name = {PARAM_DOMAIN_NAME})";
 
+        public const string DELETE_USER = $@"DELETE FROM user_data WHERE key_container_id={PARAM_KEY_CONTAINER_ID} returning *";
+
 
 
 

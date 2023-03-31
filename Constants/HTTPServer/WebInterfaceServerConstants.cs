@@ -25,9 +25,11 @@ namespace Passwordless_Authenticator.Constants.HTTPServer
         public static readonly string ERR_HTTP_INTERNAL_ERROR = "Internal Server Error";
 
         public static readonly string USER_ALREADY_EXISTS = "Username for this Domain already exists";
+        public static readonly string USER_DOES_NOT_EXISTS = "No username found under this domain";
         public static readonly string KEY_GEN_SUCCESS = "Key Pair Successfully generated!";
         public static readonly string WINDOWS_AUTH_FAIL = "Windows Authentication Failed!";
         public static readonly string USERNAME_FETCH_SUCCESS = "List of usernames for the domain fetched successfully";
+        public static readonly string USERNAME_DELETE_SUCCESS = "Username deleted from the domain successfully";
         public static readonly string SEVER_MSG_ENCRYPT_SUCCESS = "Server message has been encrypted successfully!";
         public static readonly string PUB_KEY_FETCH_SUCCESS = "Public key fetched successfully";
         public static readonly string PUB_KEY_DOES_NOT_EXIST = "Key container no found!";

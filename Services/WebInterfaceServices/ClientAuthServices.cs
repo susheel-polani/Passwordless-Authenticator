@@ -128,5 +128,42 @@ namespace Passwordless_Authenticator.Services.SignUp
             }
             return responsePayload;
         }
+
+        public static async Task<ResponsePayload> deleteUser(string domainName, string userName, HttpListenerContext context)
+        {
+            string containerName = domainName + userName;
+            Debug.WriteLine("Container Name: " + containerName);
+
+            WindowsAuthData result = await AppAuthenticationService.authenticateUser("User authentication needed before deleting the " + userName + " account from  " + domainName);
+            var responsePayload = new ResponsePayload();
+            var responseContext = context.Response;
+            if (result.flag)
+            {
+                if (!UserAuthDataController.deleteUsername(containerName))
+                {
+                    responsePayload.isSuccess = false;
+                    responsePayload.message = WebInterfaceServerConstants.USER_DOES_NOT_EXISTS;
+                    responseContext.StatusCode = (int)HttpStatusCode.InternalServerError;
+                    responseContext.StatusDescription = WebInterfaceServerConstants.ERR_HTTP_INTERNAL_ERROR;
+                }
+                else
+                {
+                    RSAKeyServices.DeleteKeyFromContainer(containerName);
+                    responsePayload.isSuccess = true;
+                    responsePayload.message = WebInterfaceServerConstants.USERNAME_DELETE_SUCCESS;
+
+                    responseContext.StatusCode = (int)HttpStatusCode.OK;
+                    responseContext.StatusDescription = WebInterfaceServerConstants.HTTP_RESP_DESC_OK;
+                }
+            }
+            else
+            {
+                responsePayload.isSuccess = false;
+                responsePayload.message = result.message;
+                responseContext.StatusCode = (int)HttpStatusCode.Forbidden;
+                responseContext.StatusDescription = WebInterfaceServerConstants.HTTP_RESP_UNAUTHORIZED;
+            }
+            return responsePayload;
+        }
     }
 }
