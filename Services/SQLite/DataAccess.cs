@@ -48,56 +48,78 @@ namespace Passwordless_Authenticator.Services.SQLite
            
         }
         
-        public static List<JObject> executeQuery(string query, List<SqliteParameter> parameters) {
+        public static List<JObject> executeQuery(string dbpath, string query, List<SqliteParameter> parameters) {
             
             List<JObject> result = new List<JObject>();
             
-            string dbpath = Path.Combine(ApplicationData.Current.LocalFolder.Path, AppConstants.DB_NAME);
+            //string dbpath = Path.Combine(ApplicationData.Current.LocalFolder.Path, AppConstants.DB_NAME);
             
             using (SqliteConnection db =
               new SqliteConnection($"Filename={dbpath}"))
             {
                 db.Open();
 
-                SqliteCommand command = new SqliteCommand();
-                command.Connection = db;
+                using ( SqliteCommand command = new SqliteCommand())
 
-                command.CommandText = query;
-
-                foreach (SqliteParameter parameter in parameters)
                 {
-                    command.Parameters.Add(parameter);
-                }
-                SqliteDataReader dataReader = command.ExecuteReader();
                 
-               
-                if (!dataReader.HasRows) {
-                    return result;
-                }
+                    command.Connection = db;
 
-                var schemaTable = dataReader.GetSchemaTable();
+                    command.CommandText = query;
 
-                // Get the column names from the schema table
-                var columns = schemaTable.Rows
-                    .OfType<DataRow>()
-                    .Select(row => row["ColumnName"].ToString())
-                    .ToList();
-
-               
-
-                while (dataReader.Read())
-                {
-                    foreach (var column in columns)
+                    if (parameters != null)
                     {
-                        var value = dataReader[column];
-                        Debug.WriteLine($">>> DB : column = {column} : value : {value}");
-                        JObject obj = new JObject();
-                        obj.Add(new JProperty(column, value));
-                        result.Add(obj);
+                        foreach (SqliteParameter parameter in parameters)
+                        {
+                            command.Parameters.Add(parameter);
+                        }
                     }
-                    
+
+
+                    using (SqliteDataReader dataReader = command.ExecuteReader())
+                    {
+
+
+                            if (!dataReader.HasRows)
+                            {
+                                return result;
+                            }
+
+                            var schemaTable = dataReader.GetSchemaTable();
+
+                            // Get the column names from the schema table
+                            var columns = schemaTable.Rows
+                                .OfType<DataRow>()
+                                .Select(row => row["ColumnName"].ToString())
+                                .ToList();
+
+
+
+                            while (dataReader.Read())
+                            {
+                                JObject obj = new JObject();
+                                foreach (var column in columns)
+                                {
+                                    var value = dataReader[column];
+                                    Debug.WriteLine($">>> DB : column = {column} : value : {value}");
+                                    // JObject obj = new JObject();
+                                    obj.Add(new JProperty(column, value));
+                                    // result.Add(obj);
+                                }
+                                result.Add(obj);
+                            }
+
+                        dataReader.Close();
+                    }
+
+                    command.Dispose();
+
                 }
+
+                db.Close();
             }
+
+            GC.Collect();
             Debug.WriteLine(">>>>>> DB : Query executed");
             return result;
         }

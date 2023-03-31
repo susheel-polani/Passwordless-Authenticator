@@ -47,7 +47,8 @@ namespace Passwordless_Authenticator
             }
             else
             {
-                rootFrame.Navigate(typeof(HomePage));
+                // rootFrame.Navigate(typeof(HomePage));
+                rootFrame.Navigate(typeof(Login));
             }
 
         }
