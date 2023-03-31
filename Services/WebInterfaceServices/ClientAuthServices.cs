@@ -22,7 +22,7 @@ namespace Passwordless_Authenticator.Services.SignUp
             string containerName = domainName + userName;
             Debug.WriteLine("Container Name: " + containerName);
 
-            WindowsAuthData result = await AppAuthenticationService.authenticate(null);
+            WindowsAuthData result = await AppAuthenticationService.authenticateUser("User authentication needed before Signing up to " + domainName + " via the " + userName + " username");
             var responsePayload = new ResponsePayload();
             var responseContext = context.Response;
             if (result.flag)
@@ -48,7 +48,7 @@ namespace Passwordless_Authenticator.Services.SignUp
             else
             {
                 responsePayload.isSuccess = false;
-                responsePayload.message = WebInterfaceServerConstants.WINDOWS_AUTH_FAIL;
+                responsePayload.message = result.message;
                 responseContext.StatusCode = (int)HttpStatusCode.Forbidden;
                 responseContext.StatusDescription = WebInterfaceServerConstants.HTTP_RESP_UNAUTHORIZED;
             }
@@ -80,18 +80,28 @@ namespace Passwordless_Authenticator.Services.SignUp
         public static async Task<ResponsePayload> encryptServerMessage(string domainName, string userName, string serverMessage, HttpListenerContext context)
         {
             string containerName = domainName + userName;
-            string cipherText = RSAKeyServices.AsymmEncrypt(containerName, serverMessage);
-            JObject result = new JObject();
-            result.Add("cipherText", cipherText);
-
+            WindowsAuthData authenticateResult = await AppAuthenticationService.authenticateUser("User authentication needed for authentication to " + domainName + " via the " + userName + " username");
             var responsePayload = new ResponsePayload();
             var responseContext = context.Response;
-            responsePayload.isSuccess = true;
-            responsePayload.message = WebInterfaceServerConstants.SEVER_MSG_ENCRYPT_SUCCESS;
-            responsePayload.payload = result;
-            responseContext.StatusCode = (int)HttpStatusCode.OK;
-            responseContext.StatusDescription = WebInterfaceServerConstants.HTTP_RESP_DESC_OK;
+            if (authenticateResult.flag)
+            {
+                string cipherText = RSAKeyServices.AsymmEncrypt(containerName, serverMessage);
+                JObject result = new JObject();
+                result.Add("cipherText", cipherText);
 
+                responsePayload.isSuccess = true;
+                responsePayload.message = WebInterfaceServerConstants.SEVER_MSG_ENCRYPT_SUCCESS;
+                responsePayload.payload = result;
+                responseContext.StatusCode = (int)HttpStatusCode.OK;
+                responseContext.StatusDescription = WebInterfaceServerConstants.HTTP_RESP_DESC_OK;
+            }
+            else
+            {
+                responsePayload.isSuccess = false;
+                responsePayload.message = authenticateResult.message;
+                responseContext.StatusCode = (int)HttpStatusCode.Forbidden;
+                responseContext.StatusDescription = WebInterfaceServerConstants.HTTP_RESP_UNAUTHORIZED;
+            }
             return responsePayload;
         }
 
