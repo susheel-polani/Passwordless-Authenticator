@@ -36,7 +36,7 @@ namespace Passwordless_Authenticator
         }
         private async void ExportKs(string folderPath)
         {
-            DbUtils.populateDB(); /* remove this function after integrating with sign up */
+            // DbUtils.populateDB(); /* remove this function after integrating with sign up */
             string skey = CryptoUtils.getUniqueKey(16);
             string sIV = CryptoUtils.getUniqueKey(16);
             string encres = await KeyUtils.exportKeys(folderPath, skey, sIV);
