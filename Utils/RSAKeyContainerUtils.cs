@@ -13,6 +13,7 @@ namespace Passwordless_Authenticator.Utils
         {
             var parameters = new CspParameters
             {
+                Flags = CspProviderFlags.UseNonExportableKey,
                 KeyContainerName = containerName
             };
             var rsa = new RSACryptoServiceProvider(parameters);
