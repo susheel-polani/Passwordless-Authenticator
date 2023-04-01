@@ -95,5 +95,25 @@ namespace Passwordless_Authenticator.Services.WebInterfaceApis
 
             WebInterfaceServerUtils.sendResponse(response, responsePayload);
         }
+
+        [PostEndpoint("/delete-user")]
+        public async void deleteUser(HttpListenerContext context)
+        {
+            Debug.WriteLine("POST /client-auth/delete-user");
+
+            HttpListenerRequest request = context.Request;
+            var requestParams = WebInterfaceServerUtils.getPayload(request);
+
+            string domainName = requestParams.GetValue("domain").ToString();
+            string userName = requestParams.GetValue("username").ToString();
+            Debug.WriteLine("Domain: " + domainName);
+            Debug.WriteLine("Username: " + userName);
+
+            var responsePayload = new ResponsePayload();
+            responsePayload = await ClientAuthServices.deleteUser(domainName, userName, context);
+            var response = context.Response;
+
+            WebInterfaceServerUtils.sendResponse(response, responsePayload);
+        }
     }
 }

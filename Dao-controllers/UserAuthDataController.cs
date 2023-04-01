@@ -132,5 +132,24 @@ namespace Passwordless_Authenticator.Dao_controllers
             List<JObject> result = DataAccess.executeQuery(dbpath, DBQueries.GET_USERNAMES, parameters);
             return result;
         }
+
+        public static Boolean deleteUsername(string containerName)
+        {
+            List<SqliteParameter> parameters = new List<SqliteParameter>
+            {
+                new SqliteParameter(DBQueries.PARAM_KEY_CONTAINER_ID, containerName)
+            };
+            List<JObject> result = DataAccess.executeQuery(DBQueries.DELETE_USER, parameters);
+            Debug.WriteLine("Inside Delete DB Call");
+            Debug.WriteLine(JsonConvert.SerializeObject(result));
+            if (result.Count != 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }

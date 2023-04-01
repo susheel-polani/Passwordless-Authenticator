@@ -75,7 +75,7 @@ namespace Passwordless_Authenticator.Constants
 
         public const string GET_IMPORT_DATA = $"SELECT username,domain_name,key_container_id,keyxml FROM user_data LEFT JOIN domains ON domains.domain_id = user_data.domain_id";
 
-
+        public const string DELETE_USER = $@"DELETE FROM user_data WHERE key_container_id={PARAM_KEY_CONTAINER_ID} returning *";
 
 
 
