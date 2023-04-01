@@ -8,18 +8,24 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using Newtonsoft.Json.Linq;
+using Passwordless_Authenticator.Constants;
 using Passwordless_Authenticator.Models;
 using Passwordless_Authenticator.Services.Auth;
 using Passwordless_Authenticator.Services.Crypto;
-using Passwordless_Authenticator.Services.Keys;
+using Passwordless_Authenticator.Services.HTTPServer;
 using Passwordless_Authenticator.Services.SQLite;
+using Passwordless_Authenticator.Utils;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -233,9 +239,43 @@ namespace Passwordless_Authenticator
             }
         }
 
-        private void exportKeys(object sender, RoutedEventArgs e)
+        private async void exportKs(object sender, RoutedEventArgs e)
         {
-            RSAKeyServices.exportKey();
+            // DbUtils.populateDB(); /* remove this function after integrating with sign up */
+            // string encryptPass = CryptoUtils.getUniqueKey(16);
+            // string encryptIV = CryptoUtils.getUniqueKey(16);
+            StorageFolder folder = await AppUtils.folderPicker();
+
+            // var result = await KeyUtils.exportKeys(folder.Path);
+
+            if (folder != null)
+            {
+
+                List<string> export_info = new List<string> { "export", folder.Path};
+
+                this.Frame.Navigate(typeof(KeyMgmt), export_info);
+            }
+
+            else
+            {
+
+            }
+        }
+
+        private async void importKs(object sender, RoutedEventArgs e)
+        {
+            StorageFile file = await AppUtils.filePicker();
+            if (file != null)
+            {
+                List<string> export_info = new List<string> { "import", file.Path };
+
+                this.Frame.Navigate(typeof(KeyMgmt), export_info);
+                // KeyUtils.importKeys();
+            }
+            else
+            {
+
+            }
         }
 
         private void pageLoaded(object sender, RoutedEventArgs e)
@@ -249,7 +289,7 @@ namespace Passwordless_Authenticator
             {
                 currentMethod.Text = " Windows Hello";
             }
-        
         }
+
     }
 }

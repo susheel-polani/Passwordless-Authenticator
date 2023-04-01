@@ -10,6 +10,7 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using Passwordless_Authenticator.Dao_controllers;
 
 namespace Passwordless_Authenticator.Services.Keys
 {
@@ -91,10 +92,29 @@ namespace Passwordless_Authenticator.Services.Keys
             string encryptedAsBase64 = Convert.ToBase64String(encryptedAsBytes);
             return encryptedAsBase64;
         }
+
+        public static string KeyToXml(string containerName)
+        {
+            var rsa = RSAKeyContainerUtils.fetchContainer(containerName);
+            return rsa.ToXmlString(true);
+        }
+
+        public static void XmlToKey(string xml, RSACryptoServiceProvider rsa)
+        {
+            rsa.FromXmlString(xml);
+        }
+
         public static void exportKey()
         {
+
+
+            DeleteKeyFromContainer("container1");
+            DeleteKeyFromContainer("container2");
+            DeleteKeyFromContainer("container3");
             DeleteKeyFromContainer("test_container");
             DeleteKeyFromContainer("target_container");
+
+            populateDB();
 
             JObject pubkey = GenerateKeyInContainer("test_container");
             Debug.WriteLine("Public key:" + pubkey.ToString());
@@ -106,12 +126,29 @@ namespace Passwordless_Authenticator.Services.Keys
             Debug.WriteLine("Exported key:" + exportkey);
 
             var rsa2 = RSAKeyContainerUtils.fetchContainer("target_container");
+
+            JObject pubkey3 = GenerateKeyInContainer("target_container");
+            Debug.WriteLine("Public key new container:" + pubkey3.ToString());
+            JObject prikey3 = GetPrivateKeyFromContainer("target_container");
+            Debug.WriteLine("Private key new container:" + prikey3.ToString());
+
             rsa2.FromXmlString(exportkey);
 
             JObject pubkey2 = GenerateKeyInContainer("target_container");
             Debug.WriteLine("Public key2:" + pubkey2.ToString());
             JObject prikey2 = GetPrivateKeyFromContainer("target_container");
             Debug.WriteLine("Private key2:" + prikey2.ToString());
+
+        }
+
+        private static void populateDB()
+        {
+            var rsa = RSAKeyContainerUtils.fetchContainer("container1");
+            UserAuthDataController.insertUserData("facebook", "user1", "container1");
+            rsa = RSAKeyContainerUtils.fetchContainer("container2");
+            UserAuthDataController.insertUserData("google", "user2", "container2");
+            rsa = RSAKeyContainerUtils.fetchContainer("container3");
+            UserAuthDataController.insertUserData("linkedin", "user3", "container3");
 
         }
 

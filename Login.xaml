@@ -1,16 +1,14 @@
 <!-- Copyright (c) Microsoft Corporation and Contributors. -->
 <!-- Licensed under the MIT License. -->
-    
-    
+
 <Page
-    x:Class="Passwordless_Authenticator.HomePage"
+    x:Class="Passwordless_Authenticator.Login"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Passwordless_Authenticator"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Loaded="pageLoaded"
     Background="#130041">
 
     <Page.Resources>
@@ -67,88 +65,23 @@
 
             <!-- START: BUTTONS AND TEXTBOXES -->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1">
-                <Border 
-                    Height="150"
-                    Width="300"
-                    CornerRadius="10"
-                    Margin="20,0,20,0"
-                    x:Name="changeAuthenticationBrdr"
-                    >
-                    <Button                                           
-                        x:Name="changeAuthentication"
-                        Click="changeAuthMethod"
-                    >
-                        <StackPanel Padding="0, 20, 0, 0">
-                            <TextBlock Text="Change Authentication Method" FontSize="27" TextWrapping="Wrap" Foreground="White"/>
-                            <StackPanel Orientation="Horizontal" Padding="0, 20, 0 , 0">
-                                <TextBlock Text="Current Method : " Foreground="#B69BFB" />
-                                <TextBlock Name="currentMethod" Text="Windows Hello"  FontWeight="Bold" Foreground="#B69BFB"/>
-                            </StackPanel>
-                        </StackPanel>
-                    </Button>
-                </Border>
-                
-                <Border 
-                    Height="150"
-                    Width="300"
-                    CornerRadius="10"
-                    Margin="20,0,20,0"
-                    x:Name="exportKBrdr"
-                    >
-                        <Button                                           
-                        x:Name="exportK"
-                            Click="exportKs"
-                    >
-                            <TextBlock Text="Export Keys" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0" FontSize="27" TextWrapping="Wrap" Foreground="White"/>
-                        </Button>
-                    </Border>
 
                 <Border 
                     Height="150"
                     Width="300"
                     CornerRadius="10"
                     Margin="20,0,20,0"
-                    x:Name="importKBrdr"
+                    x:Name="appLoginBrdr"
+                    Visibility="Visible"
                     >
                     <Button                                           
-                        x:Name="importK"
-                        Click="importKs"
+                        x:Name="appLogin"
+                        Click="login"
                     >
-                        <TextBlock Text="Import Keys" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0" FontSize="27" TextWrapping="Wrap" Foreground="White"/>
+                        <TextBlock Text="Login" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0" FontSize="27" TextWrapping="Wrap" Foreground="White"/>
                     </Button>
                 </Border>
 
-                <Border 
-                    Height="150"
-                    Width="300"
-                    CornerRadius="10"
-                    Margin="20,0,20,0"
-                    x:Name="changePassBrdr"
-                    Visibility="Collapsed" 
-                    >
-                    <Button                                           
-                        x:Name="changePass" 
-                        Click="changePassword"
-                    >
-                        <TextBlock Text="Change Password" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0" FontSize="27" TextWrapping="Wrap" Foreground="White"/>
-                    </Button>
-                </Border>
-
-                <Border 
-                    Height="150"
-                    Width="300"
-                    CornerRadius="10"
-                    Margin="20,0,20,0"
-                    x:Name="useHelloBrdr"
-                    Visibility="Collapsed" 
-                    >
-                    <Button                                           
-                        x:Name="useHello"
-                        Click="useWinHello"
-                    >
-                        <TextBlock Text="Use Windows Hello" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0" FontSize="27" TextWrapping="Wrap" Foreground="White"/>
-                    </Button>
-                </Border>
 
                 <Border 
                     Height="50"
@@ -263,30 +196,10 @@
                     </Button>
                 </Border>
 
-                <Border 
-                    Height="150"
-                    Width="300"
-                    CornerRadius="10"
-                    Margin="20,0,20,0"
-                    x:Name="reloadHomeBrdr"
-                    Visibility="Collapsed"
-                    >
-                    <Button                                           
-                        x:Name="reloadHome"  
-                        Click="reloadHomePage"
-                    >
-                        <TextBlock Text="Go Home" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0" FontSize="27" TextWrapping="Wrap" Foreground="White"/>
-                    </Button>
-                </Border>
-
             </StackPanel>
             <!-- END: MESSAGE BOX-->
-
-
-            <!--START: MESSAGE BOX placed on row 2-->
-
             <Border Height="200" Width="600" CornerRadius="10" Grid.Row="2" BorderThickness="1" Background="#44247E" Visibility="Collapsed" x:Name="TextB1Brdr">
-                <TextBlock x:Name="TextB1" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="22" FontWeight="SemiBold" TextWrapping="Wrap">Sample Text Put Message Box Here</TextBlock>
+                <TextBlock x:Name="TextB1" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="22" FontWeight="SemiBold" TextWrapping="Wrap"></TextBlock>
             </Border>
 
             <!--END: MESSAGE BOX -->

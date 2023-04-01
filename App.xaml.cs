@@ -26,6 +26,7 @@ using Windows.Media.MediaProperties;
 using Passwordless_Authenticator.Services.HTTPServer;
 using Passwordless_Authenticator.Models;
 using Passwordless_Authenticator.Services.Auth;
+using Passwordless_Authenticator.Constants;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -35,6 +36,8 @@ namespace Passwordless_Authenticator
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.
     /// </summary>
+    /// 
+
     public partial class App : Application
     {
         /// <summary>
@@ -43,22 +46,22 @@ namespace Passwordless_Authenticator
         /// </summary>
         /// 
 
+
         string setting;
         public App()
         {
             this.InitializeComponent();
-            WebInterfaceServer.startServer();
         }
 
         private async void initApp()
         {
             try
             {
-                await DataAccess.setUpDatabase();
+                File.Delete(AppConstants.COPY_DB_PATH);
                 await PasswordDB.InitializePwdDatabase();
                 await UserPrefDB.InitializeUsrPrfDatabase();
                 setting = UserPrefDB.GetPref();
-                if (setting == "Empty")
+                /* if (setting == "Empty")
                 {
                     m_window = new MainWindow();
                     m_window.Activate();
@@ -74,6 +77,10 @@ namespace Passwordless_Authenticator
                         m_window.Activate();
                     }
                 }
+                */
+                m_window = new MainWindow();
+                m_window.Activate();
+
             }
             catch
             {
@@ -92,6 +99,6 @@ namespace Passwordless_Authenticator
             initApp();
         }
 
-        private Window m_window;
+        public static Window m_window;
     }
 }

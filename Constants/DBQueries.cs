@@ -40,6 +40,7 @@ namespace Passwordless_Authenticator.Constants
         public const string PARAM_USER_ID = "@userId";
         public const string PARAM_USER_NAME = "@username";
         public const string PARAM_KEY_CONTAINER_ID = "@keyContainerId";
+        public const string PARAM_KEYXML = "@keyxml";
 
 
         // Business logic queries
@@ -60,9 +61,21 @@ namespace Passwordless_Authenticator.Constants
         public const string GET_USERNAMES = @$"SELECT username FROM user_data 
                                                 WHERE domain_id = (SELECT domain_id FROM domains WHERE domain_name = {PARAM_DOMAIN_NAME})";
 
+        public const string ADD_XML = $"ALTER TABLE user_data ADD COLUMN keyxml VARCHAR(256)";
+
+        // public const string GET_ALL_USERIDS = $"SELECT user_id FROM user_data";
+
+        // public const string GET_CONTAINER_ID = $"SELECT key_container_id FROM user_data WHERE user_id = {PARAM_USER_ID}";
+
+        public const string SELECT_ALL = $"SELECT * from user_data";
+
+        public const string ADD_KEYXML = $"UPDATE user_data SET keyxml = {PARAM_KEYXML} WHERE user_id = {PARAM_USER_ID}";
+
+        public const string GET_USER_DOM =  $"SELECT username,domain_name FROM user_data LEFT JOIN domains ON domains.domain_id = user_data.domain_id";
+
+        public const string GET_IMPORT_DATA = $"SELECT username,domain_name,key_container_id,keyxml FROM user_data LEFT JOIN domains ON domains.domain_id = user_data.domain_id";
+
         public const string DELETE_USER = $@"DELETE FROM user_data WHERE key_container_id={PARAM_KEY_CONTAINER_ID} returning *";
-
-
 
 
 
