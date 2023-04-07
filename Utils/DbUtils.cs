@@ -27,30 +27,11 @@ namespace Passwordless_Authenticator.Utils
         // add funcitonality for copying the DB, during export and import
         public static void copyDB()
         {
-            // modify this so that it takes user input for the destination location for exporting, and user input for from location when importing
 
             string dbpath = Path.Combine(ApplicationData.Current.LocalFolder.Path, "asym-auth.db");
             string copy_dbpath = Path.Combine(ApplicationData.Current.LocalFolder.Path, "copy_asym-auth.db");
 
-            //var folderPicker = new Windows.Storage.Pickers.FolderPicker();
-            //folderPicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Desktop;
-            //folderPicker.FileTypeFilter.Add("*");
-
-            //StorageFolder folder = await folderPicker.PickSingleFolderAsync();
-
-            //Windows.Storage.AccessCache.StorageApplicationPermissions.FutureAccessList.AddOrReplace("PickedFolderToken", folder);
-
-            //string enc_dbpath = Path.Combine(ApplicationData.Current.LocalFolder.Path, "encrypted.db");
-
-            //tring dest_path = Path.Combine(folder.Path, "encrypted.db");
-
-            //string password = "passwordkeyvault";
             File.Copy(dbpath, copy_dbpath, true);
-            // FileEncryptionService.EncryptFile(copy_dbpath, enc_dbpath, password);
-            // Debug.Write("File encrpted");
-            // File.Copy(enc_dbpath, dest_path, true);
-
-            // File.Delete(copy_dbpath);
         }
 
         public static void appendXML(string copy_dbpath)
@@ -136,8 +117,6 @@ namespace Passwordless_Authenticator.Utils
                 rsa1 = RSAKeyContainerUtils.fetchContainer("container1");
                 Debug.WriteLine("After overwriting: " + rsa1.ToXmlString(true));
 
-                //File.Delete(AppConstants.IMP_DB_PATH);
-
                 return "Database imported successfully.";
             }
 
@@ -178,6 +157,7 @@ namespace Passwordless_Authenticator.Utils
         }
 
 
+        /*
         public static void populateDB()
         {
             // populates the db with dummy values. Need to set up a query to delete users
@@ -200,5 +180,6 @@ namespace Passwordless_Authenticator.Utils
 
 
         }
+        */
     }
 }

@@ -245,7 +245,6 @@ namespace Passwordless_Authenticator
             // string encryptPass = CryptoUtils.getUniqueKey(16);
             // string encryptIV = CryptoUtils.getUniqueKey(16);
             StorageFolder folder = await AppUtils.folderPicker();
-            DbUtils.populateDB();
 
             // var result = await KeyUtils.exportKeys(folder.Path);
 
@@ -265,7 +264,6 @@ namespace Passwordless_Authenticator
 
         private async void importKs(object sender, RoutedEventArgs e)
         {
-            DbUtils.populateDB();
             StorageFile file = await AppUtils.filePicker();
             if (file != null)
             {
