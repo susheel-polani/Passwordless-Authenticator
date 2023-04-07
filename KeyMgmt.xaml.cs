@@ -39,12 +39,12 @@ namespace Passwordless_Authenticator
             // DbUtils.populateDB(); /* remove this function after integrating with sign up */
             string skey = CryptoUtils.getUniqueKey(16);
             string sIV = CryptoUtils.getUniqueKey(16);
-            string encres = await KeyUtils.exportKeys(folderPath, skey, sIV);
+            string encres = await KeyUtils.exportKeys(folderPath, skey);
 
             if (encres == "File encrypted successfully.")
             {
                 TextB1Brdr.Visibility = Visibility.Visible;
-                TextB1.Text = "Database encrypted. \nKey: " + skey + " \nIV: " + sIV + "\nUse these to decrypt the DB.";
+                TextB1.Text = "Database encrypted. \nKey: " + skey + "\nUse this key to decrypt the DB.";
             }
             else
             {
@@ -60,9 +60,8 @@ namespace Passwordless_Authenticator
 
         private async void checkDec(object sender, RoutedEventArgs e)
         {
-            string skey = enterPass.Password;
-            string sIV = enterKey.Password;
-            string opres = await KeyUtils.importKeys(filePath, skey, sIV);
+            string skey = enterKey.Password;
+            string opres = await KeyUtils.importKeys(filePath, skey);
             TextB1Brdr.Visibility  = Visibility.Visible;
             TextB1.Text = opres;
         }
@@ -79,10 +78,9 @@ namespace Passwordless_Authenticator
             else if (key_service[0] == "import")
             {
                 enterKeyBrdr.Visibility = Visibility.Visible;
-                enterPassBrdr.Visibility = Visibility.Visible;
                 submitDecBrdr.Visibility = Visibility.Visible;
                 TextB1Brdr.Visibility = Visibility.Visible;
-                TextB1.Text = "Enter the password and IV to decrypt the database";
+                TextB1.Text = "Enter the key to decrypt the database";
                 filePath = key_service[1];
             }
 

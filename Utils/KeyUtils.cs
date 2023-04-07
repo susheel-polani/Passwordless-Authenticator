@@ -26,20 +26,9 @@ namespace Passwordless_Authenticator.Utils
     internal class KeyUtils
     {
         // add export and import key functionality here
-        public static async Task<string> exportKeys(string folderPath, string pass, string iv)
+        public static async Task<string> exportKeys(string folderPath, string pass)
         {
 
-            /*
-            var folderPicker = new FolderPicker();
-
-            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.m_window);
-            WinRT.Interop.InitializeWithWindow.Initialize(folderPicker, hwnd);
-
-            folderPicker.SuggestedStartLocation = PickerLocationId.Desktop;
-            folderPicker.FileTypeFilter.Add("*");
-
-            StorageFolder folder = await folderPicker.PickSingleFolderAsync();
-            */
 
             if (folderPath != null)
             {
@@ -50,7 +39,7 @@ namespace Passwordless_Authenticator.Utils
 
                     string enc_path = Path.Combine(folderPath, "encrypted.db");
                     File.Copy(AppConstants.COPY_DB_PATH, AppConstants.ENC_DB_PATH);
-                    string encres = FileEncryptionService.EncryptFile(enc_path, pass, iv);
+                    string encres = FileEncryptionService.EncryptFile(enc_path, pass);
                     File.Delete(AppConstants.ENC_DB_PATH);
                     return encres;
 
@@ -64,21 +53,12 @@ namespace Passwordless_Authenticator.Utils
             }
         }
 
-        public static async Task<string> importKeys(string filePath, string pass, string iv)
+        public static async Task<string> importKeys(string filePath, string pass)
         {
-            /*
-            var filePicker = new FileOpenPicker();
-
-            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.m_window);
-            WinRT.Interop.InitializeWithWindow.Initialize(filePicker, hwnd);
-
-            filePicker.FileTypeFilter.Add(".db");
-            var file = await filePicker.PickSingleFileAsync();
-            */
 
             if (filePath != null)
             {
-                string decres = FileEncryptionService.DecryptFile(filePath, pass, iv);
+                string decres = FileEncryptionService.DecryptFile(filePath, pass);
                 if (decres == "File decrypted Successfully.\n")
                 {
                     string impres = await DbUtils.importDB();

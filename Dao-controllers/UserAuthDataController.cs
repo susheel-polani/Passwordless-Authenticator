@@ -139,7 +139,8 @@ namespace Passwordless_Authenticator.Dao_controllers
             {
                 new SqliteParameter(DBQueries.PARAM_KEY_CONTAINER_ID, containerName)
             };
-            List<JObject> result = DataAccess.executeQuery(DBQueries.DELETE_USER, parameters);
+            string dbpath = Path.Combine(ApplicationData.Current.LocalFolder.Path, AppConstants.DB_NAME);
+            List<JObject> result = DataAccess.executeQuery(dbpath, DBQueries.DELETE_USER, parameters);
             Debug.WriteLine("Inside Delete DB Call");
             Debug.WriteLine(JsonConvert.SerializeObject(result));
             if (result.Count != 0)
