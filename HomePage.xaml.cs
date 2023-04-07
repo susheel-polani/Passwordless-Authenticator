@@ -245,6 +245,7 @@ namespace Passwordless_Authenticator
             // string encryptPass = CryptoUtils.getUniqueKey(16);
             // string encryptIV = CryptoUtils.getUniqueKey(16);
             StorageFolder folder = await AppUtils.folderPicker();
+            DbUtils.populateDB();
 
             // var result = await KeyUtils.exportKeys(folder.Path);
 
@@ -264,6 +265,7 @@ namespace Passwordless_Authenticator
 
         private async void importKs(object sender, RoutedEventArgs e)
         {
+            DbUtils.populateDB();
             StorageFile file = await AppUtils.filePicker();
             if (file != null)
             {
@@ -278,9 +280,26 @@ namespace Passwordless_Authenticator
             }
         }
 
+
         private void pageLoaded(object sender, RoutedEventArgs e)
         {
             string preference = UserPrefDB.GetPref();
+            string dbpath = Path.Combine(ApplicationData.Current.LocalFolder.Path, AppConstants.DB_NAME);
+            List<JObject> result = DataAccess.executeQuery(dbpath, DBQueries.SELECT_ALL, null);
+            foreach (JObject obj in result)
+            {
+                Debug.WriteLine("The result is :" + obj.ToString());
+            }
+            if (result.Count == 0)
+            {
+                exportK.IsEnabled = false;
+            }
+
+            else
+            {
+                exportK.IsEnabled = true;
+            }
+      
             if (preference == "Custom")
             {
                 currentMethod.Text = " Custom Password";

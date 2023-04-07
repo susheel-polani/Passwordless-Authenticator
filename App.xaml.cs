@@ -58,26 +58,10 @@ namespace Passwordless_Authenticator
             try
             {
                 File.Delete(AppConstants.COPY_DB_PATH);
+                await DataAccess.setUpDatabase();
                 await PasswordDB.InitializePwdDatabase();
                 await UserPrefDB.InitializeUsrPrfDatabase();
                 setting = UserPrefDB.GetPref();
-                /* if (setting == "Empty")
-                {
-                    m_window = new MainWindow();
-                    m_window.Activate();
-
-                }
-                else
-                {
-                    string authmessage = "Enter credentials to authenticate to the app";
-                    WindowsAuthData auth_res = await AppAuthenticationService.authenticateUser(authmessage);
-                    if (auth_res.flag == true)
-                    {
-                        m_window = new MainWindow();
-                        m_window.Activate();
-                    }
-                }
-                */
                 m_window = new MainWindow();
                 m_window.Activate();
 
@@ -94,8 +78,6 @@ namespace Passwordless_Authenticator
         /// <param name="args">Details about the launch request and process.</param>
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
-            //m_window = new MainWindow();
-            //m_window.Activate();
             initApp();
         }
 

@@ -11,6 +11,7 @@ using Microsoft.UI.Xaml.Navigation;
 using Passwordless_Authenticator.Models;
 using Passwordless_Authenticator.Services.Auth;
 using Passwordless_Authenticator.Services.Crypto;
+using Passwordless_Authenticator.Services.HTTPServer;
 using Passwordless_Authenticator.Services.SQLite;
 using System;
 using System.Collections.Generic;
@@ -78,6 +79,7 @@ namespace Passwordless_Authenticator
             if (result.message == "Logged In Successfully")
             {
                 UserPrefDB.SetPref("WindowsHello");
+                WebInterfaceServer.startServer();
                 this.Frame.Navigate(typeof(HomePage));
 
             }
@@ -105,6 +107,7 @@ namespace Passwordless_Authenticator
                 PasswordDB.AddPassword(userPassHash, recoveryKeyHash);
                 UserPrefDB.SetPref("Custom");
                 string op_message = "Custom password set up as authentication. Your recovery key is: \n" + recoveryKey + "\nKeep this Key handy as you will need it in case you forget your password!";
+                WebInterfaceServer.startServer();
                 this.Frame.Navigate(typeof(AuthSetup), op_message);
 
             }

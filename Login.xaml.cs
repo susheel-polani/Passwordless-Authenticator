@@ -52,7 +52,6 @@ namespace Passwordless_Authenticator
                 if (result.message == "Logged In Successfully")
                 {
                     WebInterfaceServer.startServer();
-                    DataAccess.setUpDatabase();
                     this.Frame.Navigate(typeof(HomePage));
                 }
                 else
